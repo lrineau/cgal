@@ -37,6 +37,18 @@ Viewer::Viewer(QWidget* parent)
   newFormat.setSampleBuffers(true);
   newFormat.setSamples(16);
   this->setFormat(newFormat);
+  std::cerr << "New OpenGL context: " << (void*)context() <<"\n"
+            << "this->context()->contextHandle(): " << (void*)context()->contextHandle() << "\n"
+            << "context()->isValid(): " << context()->isValid() << "\n";
+  QGLFormat format = this->format();
+  std::cerr << qPrintable(QString("  old format: OpenGL %1.%2%3\n")
+                          .arg(format.majorVersion())
+                          .arg(format.minorVersion())
+                          .arg(format.profile() == QGLFormat::CoreProfile ?
+                               QString(" core profile") :
+                               format.profile() == QGLFormat::CompatibilityProfile ?
+                               QString(" compatibility profile") :
+                               QString("")));
 }
 
 Viewer::~Viewer()
