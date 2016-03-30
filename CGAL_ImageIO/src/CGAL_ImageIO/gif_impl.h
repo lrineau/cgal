@@ -128,7 +128,6 @@ void use(int) {} // warning killer
 /*****************************/
 CGAL_INLINE_FUNCTION
 int readGifImage(const char *name,_image *im) {
-FILE *fp;
 int   gif89 = 0;
 
   byte ch, ch1;
@@ -175,12 +174,7 @@ int   gif89 = 0;
   get_static_RawGIF() = get_static_Raster() = NULL;
   gif89 = 0;
 
-#ifdef WIN32
- fp = fopen(name,"rb");
-#else
-  fp = fopen(name,"r");
-#endif
-  fp = fopen(name,"rb");
+  FILE *fp = fopen(name,"rb");
   if (!fp) {
     return(GifError("could not open a GIF file"));
   }
@@ -191,17 +185,22 @@ int   gif89 = 0;
 
  /* the +256's are so we can read truncated GIF files without fear of 
      segmentation violation */
-  if (!(ptr = get_static_RawGIF() = (byte *) ImageIO_alloc(filesize+256)))
+  if (!(ptr = get_static_RawGIF() = (byte *) ImageIO_alloc(filesize+256))) {
+    fclose(fp);
     return( GifError("not enough memory to read gif file") );
-  
-  if (!(get_static_Raster() = (byte *) ImageIO_alloc(filesize+256)))    
+  }
+  if (!(get_static_Raster() = (byte *) ImageIO_alloc(filesize+256))) {
+    fclose(fp);
     return( GifError("not enough memory to read gif file") );
+  }
   
-  if (fread(ptr, filesize, 1, fp) != 1)
+  if (fread(ptr, filesize, 1, fp) != 1) {
+    fclose(fp);
     return( GifError("GIF data read failed") );
-   if      (strncmp((char *) ptr, id87, 6)==0) gif89 = 0;
+  }
+  if      (strncmp((char *) ptr, id87, 6)==0) gif89 = 0;
   else if (strncmp((char *) ptr, id89, 6)==0) gif89 = 1;
-  else    return( GifError("not a GIF file"));
+  else    { fclose(fp); return( GifError("not a GIF file")); }
   
   ptr += 6;
  /* Get variables from the GIF screen descriptor */
@@ -226,7 +225,10 @@ int   gif89 = 0;
 
   aspect = NEXTBYTE;
   if (aspect) {
-    if (!gif89) return(GifError("corrupt GIF file (screen descriptor)"));
+    if (!gif89) { 
+      fclose(fp);
+      return(GifError("corrupt GIF file (screen descriptor)"));
+    }
     else normaspect = (float) (aspect + 15) / 64.0f;   /* gif89 aspect ratio */
     if (DEBUG) fprintf(stderr,"GIF89 aspect = %f\n", normaspect);
   }
@@ -383,10 +385,14 @@ int   gif89 = 0;
     else if (block == IMAGESEP) break;   /* read an image */
 
     else if (block == TRAILER) {
+      fclose(fp);   
       return( GifError("no image data found in GIF file") );
     }
    
-    else return (GifError("Unknown block type found in file."));
+    else {
+      fclose(fp);
+      return (GifError("Unknown block type found in file."));
+    }
   }
 
 
@@ -485,8 +491,10 @@ int   gif89 = 0;
   im->data = ImageIO_alloc(get_static_Width() * get_static_Height() * 3);
   get_static_org() = get_static_buf() = (unsigned char *) im->data;
 
-  if (!get_static_org())
+  if (!get_static_org()) {
+    fclose(fp);
     return( GifError("not enough memory for image buffer") );
+  }
 
 
   /* Decompress the file, continuing until you see the GIF EOF code.
@@ -605,6 +613,7 @@ int   gif89 = 0;
   }
   /*  SetDirRButt(F_FORMAT, F_GIF);
       SetDirRButt(F_COLORS, F_FULLCOLOR);*/
+  fclose(fp);
   return 1;
 }
 
