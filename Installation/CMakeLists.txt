@@ -748,7 +748,9 @@ set(CGAL_LIBRARIES_DIR ${CMAKE_BINARY_DIR}/lib)
 set(CGAL_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include)
 
 foreach (package ${CGAL_CONFIGURED_PACKAGES})
-  set(CGAL_INCLUDE_DIRS ${CGAL_INCLUDE_DIRS} ${package}/include)
+  if(IS_DIRECTORY ${package}/include)
+    set(CGAL_INCLUDE_DIRS ${CGAL_INCLUDE_DIRS} ${package}/include)
+  endif()
 endforeach()
 
 include_directories (${CGAL_INCLUDE_DIRS})
