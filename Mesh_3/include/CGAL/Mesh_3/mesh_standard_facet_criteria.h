@@ -32,6 +32,7 @@
 #include <CGAL/number_utils.h> // for to_double
 #include <CGAL/Mesh_3/mesh_standard_criteria.h>
 #include <cmath>
+#include <CGAL/Mesh_3/dihedral_angle_3.h>
 
 
 namespace CGAL {
@@ -301,6 +302,119 @@ private:
   Sizing_field size_;
 
 };  // end Variable_curvature_size_criterion
+
+// Criterion on facets, that remove high variations of normals
+template <typename C3t3, typename Visitor_>
+class Facet_normals_criterion :
+  public Mesh_3::Abstract_criterion<typename C3t3::Triangulation, Visitor_>
+{
+private:
+  typedef typename C3t3::Triangulation Tr;
+  typedef typename Tr::Edge  Edge;
+  typedef typename Tr::Facet Facet;
+  typedef typename Tr::  Cell_handle Cell_handle;
+  typedef typename Tr::Vertex_handle Vertex_handle;
+  typedef typename Tr::Geom_traits::FT FT;
+
+  typedef Mesh_3::Abstract_criterion<Tr,Visitor_> Base;
+  typedef typename Base::Quality Quality;
+  typedef typename Base::Badness Badness;
+
+  typedef Facet_normals_criterion<C3t3,Visitor_> Self;
+
+public:
+  // Nb: the default bound of the criterion is such that the criterion
+  // is always fulfilled
+  Facet_normals_criterion(const C3t3& c3t3, const FT min_dihedral_angle = 0)
+    : c3t3(c3t3)
+    , tr(c3t3.triangulation())
+    , cos_(std::cos(CGAL_PI*CGAL::to_double(min_dihedral_angle) / 180))
+  {}
+
+protected:
+  virtual void do_accept(Visitor_& v) const
+  {
+    v.visit(*this);
+  }
+
+  virtual Self* do_clone() const
+  {
+    // Call copy ctor on this
+    return new Self(*this);
+  }
+
+  virtual Badness do_is_bad (const Facet& f) const
+  {
+    CGAL_assertion(f.first->is_facet_on_surface(f.second));
+
+    typedef typename Tr::Point Point_3;
+    typedef typename Tr::Geom_traits Gt;
+
+    typename Gt::Compare_dihedral_angle_3 compare_dihedral_angle =
+      Gt().compare_dihedral_angle_3_object();
+    for(int j = 0; j < 3; ++j) {
+      const typename Tr::Cell_handle c = f.first;
+      const int edge_va_ind = tr.vertex_triple_index(f.second, (j+1)%3);
+      const int edge_vb_ind = tr.vertex_triple_index(f.second, (j+2)%3);
+      const int facet_last_ind = tr.vertex_triple_index(f.second, j);
+      const Edge edge = Edge(c, edge_va_ind, edge_vb_ind);
+      typename Tr::Facet_circulator
+        fcirc = tr.incident_facets(edge, f),
+        ff(fcirc);
+      CGAL_assertion(fcirc != NULL);
+      CGAL_assertion(c3t3.is_in_complex(*ff));
+      std::size_t number_of_incident_facets = 1;
+      while(++fcirc != ff) {
+         if(! c3t3.is_in_complex(*fcirc)) continue;
+         ++number_of_incident_facets;
+      }
+      if(number_of_incident_facets != 2) return Badness();
+      while(++fcirc != ff) {
+        if(! c3t3.is_in_complex(*fcirc)) continue;
+        const Vertex_handle va = c->vertex(edge_va_ind);
+        const Vertex_handle vb = c->vertex(edge_vb_ind);
+        const Vertex_handle vc = c->vertex(facet_last_ind);
+        const Point_3& pa = va->point();
+        const Point_3& pb = vb->point();
+        const Point_3& pc = vc->point();
+        if(pa.weight() > 0 && pb.weight() > 0) continue;
+        const int other_va_ind = fcirc->first->index(va);
+        const int other_vb_ind = fcirc->first->index(vb);
+        const int vd_ind = 6 - fcirc->second - other_va_ind - other_vb_ind;
+        const Point_3& pd = fcirc->first->vertex(vd_ind)->point();
+        if(compare_dihedral_angle(pa, pb, pc, pd, cos_) == CGAL::SMALLER)
+        {
+#ifdef CGAL_MESH_3_DEBUG_FACET_CRITERIA
+          std::cerr << "Bad facet (dihedral angle): dihedral angle["
+                    << dihedral_angle(pa, pb, pc, pd)
+                    << "] cos[" << cos_ << "]\n";
+#endif
+          typename Gt::Compute_squared_distance_3 distance =
+            Gt().compute_squared_distance_3_object();
+          typename Gt::Construct_weighted_circumcenter_3 circumcenter =
+            Gt().construct_weighted_circumcenter_3_object();
+
+          const Point_3& p1 = c->vertex((f.second+1)&3)->point();
+          const Point_3& p2 = c->vertex((f.second+2)&3)->point();
+          const Point_3& p3 = c->vertex((f.second+3)&3)->point();
+
+          const Point_3 center = circumcenter(p1,p2,p3);
+
+          const FT sq_dist = distance(center, c->get_facet_surface_center(f.second));
+
+          return Badness(Quality(FT(1)/sq_dist));
+        }
+      }
+    }
+    return Badness();
+  }
+
+private:
+  const C3t3& c3t3;
+  const Tr& tr;
+  FT cos_;
+
+};  // end Facet_normals_criterion
 
 // Size Criterion base class
 template < typename Tr, typename Visitor_ >
