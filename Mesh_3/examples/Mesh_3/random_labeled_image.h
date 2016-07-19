@@ -48,6 +48,6 @@ CGAL::Image_3 random_labeled_image()
       }
     }
   }
-  _writeImage(image, "random-image.inr");
+  // _writeImage(image, "random-image.inr");
   return CGAL::Image_3(image);
 }
