@@ -31,6 +31,7 @@ Meshing_thread* cgal_code_mesh_3(const Polyhedron* pMesh,
                                  const double tet_shape,
                                  bool protect_features,
                                  const double sharp_edges_angle,
+                                 const double angle_normals,
                                  const int manifold,
                                  const bool surface_only,
                                  CGAL::Three::Scene_interface* scene)
@@ -42,6 +43,9 @@ Meshing_thread* cgal_code_mesh_3(const Polyhedron* pMesh,
             << "  edge size bound: " << edge_size << std::endl
             << "  facets size bound: " << facet_sizing << std::endl
             << "  approximation bound: " << facet_approx << std::endl;
+  if(angle_normals != 0)
+    std::cerr << "  maximal angle between normals: " << angle_normals
+              << std::endl;
   if (pMesh->is_closed())
     std::cerr << "  tetrahedra size bound: " << tet_sizing << std::endl;
 
@@ -101,6 +105,7 @@ Meshing_thread* cgal_code_mesh_3(const Polyhedron* pMesh,
   param.manifold = manifold;
   param.protect_features = protect_features;
   param.use_sizing_field_with_aabb_tree = polylines.empty() && protect_features;
+  param.angle_between_normals = angle_normals == 0 ? 180 : angle_normals;
 
   typedef ::Mesh_function<Polyhedral_mesh_domain,
                           Mesh_fnt::Polyhedral_domain_tag> Mesh_function;

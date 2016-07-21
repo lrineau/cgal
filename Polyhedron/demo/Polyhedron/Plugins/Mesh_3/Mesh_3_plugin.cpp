@@ -383,6 +383,7 @@ void Mesh_3_plugin::mesh_3(const bool surface_only, const bool use_defaults)
   const double edge_size = !ui.noEdgeSizing->isChecked() ? DBL_MAX : ui.edgeSizing->value();
   const bool protect_features = ui.protect->isChecked();
   const double sharp_edges_angle = ui.sharpEdgesAngle->value();
+  const double angle_normals = ui.angleNormals->value();
   const bool detect_connected_components = ui.detectComponents->isChecked();
   const int manifold =
     (ui.manifoldCheckBox->isChecked() ? 1 : 0)
@@ -419,6 +420,7 @@ void Mesh_3_plugin::mesh_3(const bool surface_only, const bool use_defaults)
                                  radius_edge,
                                  protect_features,
                                  sharp_edges_angle,
+                                 angle_normals,
                                  manifold,
                                  surface_only,
                                  scene);

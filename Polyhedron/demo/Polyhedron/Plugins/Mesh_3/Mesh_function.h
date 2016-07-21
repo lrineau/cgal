@@ -57,6 +57,7 @@ struct Mesh_parameters
   double tet_shape;
   double tet_sizing;
   double edge_sizing;
+  double angle_between_normals;
   bool protect_features;
   bool detect_connected_components;
   int manifold;
@@ -118,8 +119,9 @@ private:
   Edge_criteria edge_criteria(double b, Mesh_fnt::Domain_tag);
   Edge_criteria edge_criteria(double b, Mesh_fnt::Polyhedral_domain_tag);
 
-  void tweak_criteria(Mesh_criteria&, Mesh_fnt::Domain_tag) {}
-  void tweak_criteria(Mesh_criteria&, Mesh_fnt::Polyhedral_domain_tag);
+  void tweak_criteria(Mesh_criteria&,          Mesh_fnt::Domain_tag) {}
+  void tweak_criteria(Mesh_criteria& criteria, Mesh_fnt::Polyhedral_domain_tag);
+
 
 private:
   boost::any object_to_destroy;
@@ -148,6 +150,7 @@ log() const
   << QString("facet min angle: %1").arg(facet_angle)
   << QString("facet max size: %1").arg(facet_sizing)
   << QString("facet approx error: %1").arg(facet_approx)
+  << QString("facets normals max angle: %1").arg(angle_between_normals)
   << QString("tet shape (radius-edge): %1").arg(tet_shape)
   << QString("tet max size: %1").arg(tet_sizing)
   << QString("detect connected components: %1")
@@ -345,6 +348,15 @@ template < typename D_, typename Tag >
 void
 Mesh_function<D_,Tag>::
 tweak_criteria(Mesh_criteria& c, Mesh_fnt::Polyhedral_domain_tag) {
+  typedef typename Mesh_criteria::Facet_criteria::Visitor Facet_crit_visitor;
+  typedef CGAL::Mesh_3::Facet_normals_criterion<
+    C3t3,
+    Facet_crit_visitor
+    > Criterion;
+  if(p_.angle_between_normals < 180) {
+    c.add_facet_criterion(new Criterion(c3t3_, p_.angle_between_normals));
+  }
+
   typedef CGAL::Mesh_3::Facet_topological_criterion_with_adjacency<Tr,
        Domain, typename Facet_criteria::Visitor> New_topo_adj_crit;
 

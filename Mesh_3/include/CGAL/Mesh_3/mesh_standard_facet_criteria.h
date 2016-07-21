@@ -325,10 +325,10 @@ private:
 public:
   // Nb: the default bound of the criterion is such that the criterion
   // is always fulfilled
-  Facet_normals_criterion(const C3t3& c3t3, const FT min_dihedral_angle = 0)
+  Facet_normals_criterion(const C3t3& c3t3, const FT max_dihedral_angle = 0)
     : c3t3(c3t3)
     , tr(c3t3.triangulation())
-    , cos_(std::cos(CGAL_PI*CGAL::to_double(min_dihedral_angle) / 180))
+    , min_cos_(std::cos(CGAL_PI*CGAL::to_double(max_dihedral_angle) / 180))
   {}
 
 protected:
@@ -382,12 +382,12 @@ protected:
         const int other_vb_ind = fcirc->first->index(vb);
         const int vd_ind = 6 - fcirc->second - other_va_ind - other_vb_ind;
         const Point_3& pd = fcirc->first->vertex(vd_ind)->point();
-        if(compare_dihedral_angle(pa, pb, pc, pd, cos_) == CGAL::SMALLER)
+        if(compare_dihedral_angle(pa, pb, pc, pd, min_cos_) == CGAL::SMALLER)
         {
 #ifdef CGAL_MESH_3_DEBUG_FACET_CRITERIA
           std::cerr << "Bad facet (dihedral angle): dihedral angle["
                     << dihedral_angle(pa, pb, pc, pd)
-                    << "] cos[" << cos_ << "]\n";
+                    << "] cos[" << min_cos_ << "]\n";
 #endif
           typename Gt::Compute_squared_distance_3 distance =
             Gt().compute_squared_distance_3_object();
@@ -412,7 +412,7 @@ protected:
 private:
   const C3t3& c3t3;
   const Tr& tr;
-  FT cos_;
+  FT min_cos_;
 
 };  // end Facet_normals_criterion
 

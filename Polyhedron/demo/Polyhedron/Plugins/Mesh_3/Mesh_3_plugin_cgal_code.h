@@ -29,6 +29,7 @@ Meshing_thread* cgal_code_mesh_3(const Polyhedron* pMesh,
                                  const double tet_shape,
                                  bool protect_features,
                                  const double sharp_edges_angle,
+                                 const double angle_normals,
                                  const int manifold,
                                  const bool surface_only,
                                  CGAL::Three::Scene_interface* scene);
