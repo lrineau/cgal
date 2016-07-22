@@ -305,7 +305,7 @@ private:
 
 // Criterion on facets, that remove high variations of normals
 template <typename C3t3, typename Visitor_>
-class Facet_normals_criterion :
+class Facet_normals_variation_criterion :
   public Mesh_3::Abstract_criterion<typename C3t3::Triangulation, Visitor_>
 {
 private:
@@ -320,15 +320,17 @@ private:
   typedef typename Base::Quality Quality;
   typedef typename Base::Badness Badness;
 
-  typedef Facet_normals_criterion<C3t3,Visitor_> Self;
+  typedef Facet_normals_variation_criterion<C3t3,Visitor_> Self;
 
 public:
   // Nb: the default bound of the criterion is such that the criterion
   // is always fulfilled
-  Facet_normals_criterion(const C3t3& c3t3, const FT max_dihedral_angle = 0)
+  Facet_normals_variation_criterion(const C3t3& c3t3, const FT max_dihedral_angle = 0)
     : c3t3(c3t3)
     , tr(c3t3.triangulation())
-    , min_cos_(std::cos(CGAL_PI*CGAL::to_double(max_dihedral_angle) / 180))
+    , min_cos_(max_dihedral_angle == 0 ?
+               -1 :
+               std::cos(CGAL_PI*CGAL::to_double(max_dihedral_angle) / 180))
   {}
 
 protected:
@@ -414,7 +416,119 @@ private:
   const Tr& tr;
   FT min_cos_;
 
-};  // end Facet_normals_criterion
+};  // end Facet_normals_variation_criterion
+
+// Criterion on facets, that remove high variations of normals
+template <typename C3t3,
+          typename Polyhedral_domain,
+          typename Vis_>
+class Facet_normals_angle_with_surface_normals_criterion :
+  public Mesh_3::Abstract_criterion<typename C3t3::Triangulation, Vis_>
+{
+private:
+  typedef typename C3t3::Triangulation Tr;
+  typedef typename Tr::Edge  Edge;
+  typedef typename Tr::Facet Facet;
+  typedef typename Tr::  Cell_handle Cell_handle;
+  typedef typename Tr::Vertex_handle Vertex_handle;
+  typedef typename Tr::Geom_traits::FT FT;
+
+  typedef Mesh_3::Abstract_criterion<Tr,Vis_> Base;
+  typedef typename Base::Quality Quality;
+  typedef typename Base::Badness Badness;
+
+  typedef Polyhedral_domain Dom;
+  typedef Facet_normals_angle_with_surface_normals_criterion<C3t3,
+                                                             Dom,
+                                                             Vis_> Self;
+
+public:
+  // Nb: the default bound of the criterion is such that the criterion
+  // is always fulfilled
+  Facet_normals_angle_with_surface_normals_criterion
+  (const C3t3& c3t3,
+   const Polyhedral_domain& domain,
+   const FT max_angle = 0
+   )
+    : c3t3(c3t3)
+    , domain(domain)
+    , tr(c3t3.triangulation())
+    , sq_min_cos(CGAL::square(std::cos(CGAL_PI*CGAL::to_double(max_angle) / 180)))
+  {}
+
+protected:
+  virtual void do_accept(Vis_& v) const
+  {
+    v.visit(*this);
+  }
+
+  virtual Self* do_clone() const
+  {
+    // Call copy ctor on this
+    return new Self(*this);
+  }
+
+  virtual Badness do_is_bad (const Facet& f) const
+  {
+    CGAL_assertion(f.first->is_facet_on_surface(f.second));
+
+    typedef typename Tr::Point Point_3;
+    typedef typename Tr::Geom_traits Gt;
+    typedef typename Gt::Vector_3 Vector_3;
+
+    const typename Tr::Cell_handle cell = f.first;
+    const int facet_index = f.second;
+
+    const Point_3& facet_surface_center =
+      cell->get_facet_surface_center(f.second);
+
+    typedef typename Polyhedral_domain::AABB_tree AABB_tree;
+    typedef typename AABB_tree::Primitive::Id Id;
+    const AABB_tree& aabb_tree = domain.aabb_tree();
+    const Id fh =
+      aabb_tree.closest_point_and_primitive(facet_surface_center).second;
+    const Point_3& a = fh->halfedge()->vertex()->point();
+    const Point_3& b = fh->halfedge()->next()->vertex()->point();
+    const Point_3& c = fh->halfedge()->next()->next()->vertex()->point();
+
+    const Point_3& d = cell->vertex(tr.vertex_triple_index(facet_index, 0))->point();
+    const Point_3& e = cell->vertex(tr.vertex_triple_index(facet_index, 1))->point();
+    const Point_3& pf = cell->vertex(tr.vertex_triple_index(facet_index, 2))->point();
+
+    const Vector_3 n_abc = cross_product(b.point()-a.point(), c.point()-a.point());
+    const Vector_3 n_def = cross_product(e.point()-d.point(), pf.point()-d.point());
+    const FT sq_l_n_abc = n_abc.squared_length();
+    const FT sq_l_n_def = n_def.squared_length();
+    if(sq_l_n_def == FT(0) || sq_l_n_abc == FT(0))
+      return Badness();
+    const FT sq_scalar_product = CGAL::square(n_abc * n_def);
+    if(sq_scalar_product < (sq_min_cos * sq_l_n_abc * sq_l_n_def))
+    {
+#ifdef CGAL_MESH_3_DEBUG_FACET_CRITERIA
+      std::cerr << "Bad facet (normal angle with surface): angle["
+                << std::acos( CGAL::sqrt(sq_scalar_product /
+                                         sq_l_n_abc /
+                                         sq_l_n_def) )
+        * 180 / CGAL_PI
+                << "] cos[" << CGAL::sqrt(sq_min_cos) << "]\n";
+#endif
+      typename Gt::Compute_squared_distance_3 distance =
+        Gt().compute_squared_distance_3_object();
+
+      const FT sq_dist = distance(pf, facet_surface_center);
+
+      return Badness(Quality(FT(1)/sq_dist));
+    }
+    return Badness();
+  }
+
+private:
+  const C3t3& c3t3;
+  const Polyhedral_domain& domain;
+  const Tr& tr;
+  FT sq_min_cos;
+
+};  // end Facet_normals_angle_with_surface_normals_criterion
 
 // Size Criterion base class
 template < typename Tr, typename Visitor_ >

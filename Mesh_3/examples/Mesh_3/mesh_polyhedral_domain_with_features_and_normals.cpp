@@ -51,13 +51,26 @@ int main(int argc, char*argv[])
 
   dump_c3t3(c3t3, "before");
 
-  typedef Mesh_criteria::Facet_criteria::Visitor Facet_criteria_visitor;
-  typedef CGAL::Mesh_3::Facet_normals_criterion<
-    C3t3,
-    Facet_criteria_visitor
-    > Criterion;
+  if(angle < 0) {
+    typedef Mesh_criteria::Facet_criteria::Visitor Facet_criteria_visitor;
+    typedef CGAL::Mesh_3::Facet_normals_angle_with_surface_normals_criterion<
+      C3t3,
+      Mesh_domain,
+      Facet_criteria_visitor
+      > Criterion;
 
-  criteria.add_facet_criterion(new Criterion(c3t3, angle));
+    criteria.add_facet_criterion(new Criterion(c3t3, domain, -angle));
+  }
+  else {
+    typedef Mesh_criteria::Facet_criteria::Visitor Facet_criteria_visitor;
+    typedef CGAL::Mesh_3::Facet_normals_variation_criterion<
+      C3t3,
+    Facet_criteria_visitor
+      > Criterion;
+
+    criteria.add_facet_criterion(new Criterion(c3t3, angle));
+  }
+
   CGAL::refine_mesh_3(c3t3, domain, criteria);
 
   dump_c3t3(c3t3, "after");

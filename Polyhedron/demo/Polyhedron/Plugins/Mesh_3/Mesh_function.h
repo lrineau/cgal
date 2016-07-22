@@ -349,12 +349,23 @@ void
 Mesh_function<D_,Tag>::
 tweak_criteria(Mesh_criteria& c, Mesh_fnt::Polyhedral_domain_tag) {
   typedef typename Mesh_criteria::Facet_criteria::Visitor Facet_crit_visitor;
-  typedef CGAL::Mesh_3::Facet_normals_criterion<
+  typedef CGAL::Mesh_3::Facet_normals_variation_criterion<
     C3t3,
     Facet_crit_visitor
     > Criterion;
-  if(p_.angle_between_normals < 180) {
+  typedef CGAL::Mesh_3::Facet_normals_angle_with_surface_normals_criterion<
+    C3t3,
+    Domain,
+    Facet_crit_visitor
+    > Criterion_with_surface_normals;
+  if(p_.angle_between_normals > 0 && p_.angle_between_normals < 180) {
     c.add_facet_criterion(new Criterion(c3t3_, p_.angle_between_normals));
+  }
+  if(p_.angle_between_normals < 0) {
+    c.add_facet_criterion(new Criterion_with_surface_normals
+                                 (c3t3_,
+                                  *domain_,
+                                  -p_.angle_between_normals));
   }
 
   typedef CGAL::Mesh_3::Facet_topological_criterion_with_adjacency<Tr,
