@@ -578,8 +578,11 @@ public:
     else
       result = test_point_conflict(p, zone);
 
-#ifdef CGAL_MESHES_DEBUG_REFINEMENT_POINTS
+#if ! defined(CGAL_MESH_3_VERY_VERBOSE) && defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
     std::cerr << "(" << p << ") ";
+#endif // CGAL_MESHES_DEBUG_REFINEMENT_POINTS && ! CGAL_MESH_3_VERY_VERBOSE
+
+#if defined(CGAL_MESH_3_VERY_VERBOSE) || defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
     switch( result )
     {
     case NO_CONFLICT:
@@ -605,7 +608,7 @@ public:
       std::cerr << "could not lock zone\n";
       break;
     }
-#endif
+#endif // CGAL_MESHES_DEBUG_REFINEMENT_POINTS || CGAL_MESH_3_VERY_VERBOSE
 
     if(result == NO_CONFLICT)
     {
@@ -963,8 +966,11 @@ public:
     else
       result = test_point_conflict(p, zone, visitor);
 
-#ifdef CGAL_MESHES_DEBUG_REFINEMENT_POINTS
+#if ! defined(CGAL_MESH_3_VERY_VERBOSE) && defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
     std::cerr << "(" << p << ") ";
+#endif // CGAL_MESHES_DEBUG_REFINEMENT_POINTS && ! CGAL_MESH_3_VERY_VERBOSE
+
+#if defined(CGAL_MESH_3_VERY_VERBOSE) || defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
     switch( result )
     {
     case NO_CONFLICT:
@@ -990,7 +996,7 @@ public:
       std::cerr << "could not lock zone\n";
       break;
     }
-#endif
+#endif // CGAL_MESHES_DEBUG_REFINEMENT_POINTS || CGAL_MESH_3_VERY_VERBOSE
 
     if(result == NO_CONFLICT)
     {
