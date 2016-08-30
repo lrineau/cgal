@@ -46,6 +46,9 @@
 
 #include <boost/format.hpp>
 #include <boost/optional.hpp>
+#ifndef CGAL_NDEBUG
+#  include <boost/optional/optional_io.hpp>
+#endif
 #include <boost/mpl/has_xxx.hpp>
 #include <boost/mpl/if.hpp>
 #include <CGAL/tuple.h>
@@ -289,16 +292,63 @@ public:
   /// Gets the point to insert from the element to refine
   Point refinement_point_impl(const Facet& facet) const
   {
-#ifdef CGAL_MESHES_DEBUG_REFINEMENT_POINTS
-    const Cell_handle c = facet.first;
-    const int i = facet.second;
-    std::cerr << "Facet ("
-              << c->vertex((i+1)&3)->point() << " , "
-              << c->vertex((i+2)&3)->point() << " , "
-              << c->vertex((i+3)&3)->point() << ") : refinement point is "
-              << get_facet_surface_center(facet) << std::endl;
-#endif
-    CGAL_assertion (this->is_facet_on_surface(facet));
+    CGAL_assertion_debug (this->is_facet_on_surface(facet),
+       (
+        [this, facet]() {
+         const Cell_handle c = facet.first;
+         const int i = facet.second;
+         std::cerr << "\nFacet (" << c->vertex((i+1)&3)->point() << " , "
+                   << "\n       " << c->vertex((i+2)&3)->point() << " , "
+                   << "\n       " << c->vertex((i+3)&3)->point() << ") :\n  refinement point is "
+                   << this->get_facet_surface_center(facet) << std::endl;
+         if(this->r_tr_.is_infinite(c) ||
+            this->r_tr_.is_infinite(r_tr_.mirror_facet(facet).first))
+         {
+           std::cerr << "  - the facet is on CONVEX HULL\n";
+         } else {
+           Bare_point p1, p2;
+           this->dual_segment(facet, p1, p2);
+           std::cerr << "  - the dual segment:\n"
+                     << "              " << p1 << "\n"
+                     << "              " << p2 << "\n";
+           typename MeshDomain::Construct_intersection construct_intersection =
+             this->r_oracle_.construct_intersection_object();
+           typename Gt::Compare_xyz_3 compare_xyz = Gt().compare_xyz_3_object();
+           Segment_3 segment = ( compare_xyz(p1,p2)== CGAL::SMALLER )
+             ? Segment_3(p1, p2)
+             : Segment_3(p2, p1);
+           typename MeshDomain::Intersection intersect = construct_intersection(segment);
+           if(CGAL::cpp11::get<2>(intersect) == 0) {
+             std::cerr << "  - NO INTERSECTION\n";
+           } else {
+             std::cerr << "  - intersection: "
+                       << oformat(CGAL::cpp11::get<0>(intersect)) << "\n";
+           }
+           typename MeshDomain::Is_in_domain is_in_domain =
+             this->r_oracle_.is_in_domain_object();
+
+           std::cerr << "  - p1 is in domain: " << is_in_domain(p1) << "\n";
+           std::cerr << "  - p2 is in domain: " << is_in_domain(p2) << "\n";
+
+           this->dual_segment_exact(facet, p1, p2);
+           std::cerr << "  - the EXACT dual segment:\n"
+                     << "              " << p1 << "\n"
+                     << "              " << p2 << "\n";
+           segment = ( compare_xyz(p1,p2)== CGAL::SMALLER )
+             ? Segment_3(p1, p2)
+             : Segment_3(p2, p1);
+           intersect = construct_intersection(segment);
+           if(CGAL::cpp11::get<2>(intersect) == 0) {
+             std::cerr << "  - NO INTERSECTION\n";
+           } else {
+             std::cerr << "  - intersection: "
+                       << oformat(CGAL::cpp11::get<0>(intersect)) << "\n";
+           }
+           std::cerr << "  - exact p1 is in domain: " << is_in_domain(p1) << "\n";
+           std::cerr << "  - exact p2 is in domain: " << is_in_domain(p2) << "\n";
+         }
+       }
+        ));
     this->set_last_vertex_index(get_facet_surface_center_index(facet));
     return get_facet_surface_center(facet);
   };
