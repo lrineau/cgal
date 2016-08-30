@@ -470,6 +470,7 @@ public:
   std::string debug_info_element_impl(const Cell_handle &ch) const
   {
     std::stringstream sstr;
+    sstr.precision(17);
     sstr << "Cell { " << std::endl
     << "  - " << *ch->vertex(0)  << std::endl
     << "  - " << *ch->vertex(1)  << std::endl
