@@ -52,10 +52,10 @@
 #  define CGAL_NO_WARNINGS
 #endif
 
-#ifndef CGAL_NO_ASSERTIONS 
 #ifdef CGAL_CFG_NO_CPP0X_STATIC_ASSERT
-#include <boost/static_assert.hpp>
-#endif
+// Always include <boost/static_assert.hpp>, even if
+// `CGAL_NO_ASSERTIONS` is defined.
+#  include <boost/static_assert.hpp>
 #endif
 
 namespace CGAL {
