@@ -49,6 +49,7 @@ enum Mesher_level_conflict_status {
   NO_CONFLICT = 0
   , CONFLICT_BUT_ELEMENT_CAN_BE_RECONSIDERED
   , CONFLICT_AND_ELEMENT_SHOULD_BE_DROPPED
+  , REFINEMENT_POINT_IS_ALREADY_INSERTED
   , THE_FACET_TO_REFINE_IS_NOT_IN_ITS_CONFLICT_ZONE
   , ELEMENT_WAS_A_ZOMBIE
   , COULD_NOT_LOCK_ZONE
@@ -593,6 +594,10 @@ public:
       break;
     case CONFLICT_AND_ELEMENT_SHOULD_BE_DROPPED:
       std::cerr << "rejected (permanent)\n";
+      break;
+    case REFINEMENT_POINT_IS_ALREADY_INSERTED:
+      std::cerr << "ERROR!\n";
+      CGAL_error();
       break;
     case THE_FACET_TO_REFINE_IS_NOT_IN_ITS_CONFLICT_ZONE:
       std::cerr << "the facet to refine was not in the conflict zone "
