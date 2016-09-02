@@ -410,16 +410,26 @@ protected:
     const Cell_handle c = facet.first;
     const int i = facet.second;
     const Facet mirror_facet = r_tr_.mirror_facet(facet);
-    cerr << "\nFacet( " << *c->vertex((i+1)&3) << " , "
-	 << "\n       " << *c->vertex((i+2)&3) << " , "
-	 << "\n       " << *c->vertex((i+3)&3) << " ) :"
+
+    Vertex_handle vertices[3];
+    vertices[0] = c->vertex((i+1)&3);
+    vertices[1] = c->vertex((i+2)&3);
+    vertices[2] = c->vertex((i+3)&3);
+    std::sort(&vertices[0], &vertices[0] + 3);
+    cerr << "\nFacet( " << *vertices[0] << " , "
+	 << "\n       " << *vertices[1] << " , "
+	 << "\n       " << *vertices[2] << " ) :"
          << "\n  - 4th vertex in cell:      " << *c->vertex(i)
          << "\n  - 5th vertex (other cell): "
          << *mirror_facet.first->vertex(mirror_facet.second);
+
     if(verbose_level < 1) { cerr << std::endl; return; }
     cerr << "\n  refinement point is "
 	 << this->get_facet_surface_center(facet) << std::endl;
+
     if(verbose_level < 2) return;
+    cerr <<   "  or, in mirror facet "
+	 << this->get_facet_surface_center(mirror_facet) << std::endl;
     if(this->r_tr_.is_infinite(c) ||
        this->r_tr_.is_infinite(r_tr_.mirror_facet(facet).first))
     {
@@ -443,6 +453,8 @@ protected:
 	cerr << "  - intersection: "
 	     << oformat(CGAL::cpp11::get<0>(intersect)) << "\n";
       }
+      cerr << "  - facet surface patch index: "
+           << oformat(c->surface_patch_index(i)) << "\n";
 
       cerr << "  - p1 is in domain: " << debug_is_in_domain_string(p1) << "\n";
       cerr << "  - p2 is in domain: " << debug_is_in_domain_string(p2) << "\n";
@@ -464,6 +476,7 @@ protected:
       cerr << "  - exact p1 is in domain: " << debug_is_in_domain_string(p1) << "\n";
       cerr << "  - exact p2 is in domain: " << debug_is_in_domain_string(p2) << "\n";
     }
+
     if(verbose_level < 10) return;
     dump_c3t3(r_c3t3_, "dump");
   }
