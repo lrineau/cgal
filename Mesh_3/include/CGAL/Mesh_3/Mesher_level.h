@@ -562,9 +562,9 @@ public:
   {
     const Point& p = this->refinement_point(e);
 
-#ifdef CGAL_MESH_3_VERY_VERBOSE
+#if CGAL_MESH_3_VERY_VERBOSE
     std::cerr << "Trying to insert point: " << p <<
-      " inside element " << debug_info_element(e) << std::endl;
+      " inside element " << debug_info_element(e, CGAL_MESH_3_VERY_VERBOSE) << std::endl;
 #endif
 
     Mesher_level_conflict_status result;
@@ -579,11 +579,11 @@ public:
     else
       result = test_point_conflict(p, zone);
 
-#if ! defined(CGAL_MESH_3_VERY_VERBOSE) && defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
+#if ! CGAL_MESH_3_VERY_VERBOSE && defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
     std::cerr << "(" << p << ") ";
 #endif // CGAL_MESHES_DEBUG_REFINEMENT_POINTS && ! CGAL_MESH_3_VERY_VERBOSE
 
-#if defined(CGAL_MESH_3_VERY_VERBOSE) || defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
+#if CGAL_MESH_3_VERY_VERBOSE || defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
     switch( result )
     {
     case NO_CONFLICT:
@@ -965,9 +965,9 @@ public:
   {
     const Point& p = this->refinement_point(e);
 
-#ifdef CGAL_MESH_3_VERY_VERBOSE
+#if CGAL_MESH_3_VERY_VERBOSE
     std::cerr << "Trying to insert point: " << p <<
-      " inside element " << debug_info_element(e) << std::endl;
+      " inside element " << debug_info_element(e, CGAL_MESH_3_VERY_VERBOSE) << std::endl;
 #endif
 
     before_conflicts(e, p, visitor);
@@ -983,11 +983,11 @@ public:
     else
       result = test_point_conflict(p, zone, visitor);
 
-#if ! defined(CGAL_MESH_3_VERY_VERBOSE) && defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
+#if ! CGAL_MESH_3_VERY_VERBOSE && defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
     std::cerr << "(" << p << ") ";
 #endif // CGAL_MESHES_DEBUG_REFINEMENT_POINTS && ! CGAL_MESH_3_VERY_VERBOSE
 
-#if defined(CGAL_MESH_3_VERY_VERBOSE) || defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
+#if CGAL_MESH_3_VERY_VERBOSE || defined(CGAL_MESHES_DEBUG_REFINEMENT_POINTS)
     switch( result )
     {
     case NO_CONFLICT:

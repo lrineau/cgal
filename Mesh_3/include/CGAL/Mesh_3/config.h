@@ -24,6 +24,13 @@
 
 //#define CGAL_MESH_3_VERBOSE 1
 
+// The following can be defined to a verbosity level.
+// Current meaningful values: 1, 2, and 10.
+//   -  1: display information about the current refined element
+//   -  2: display more information about the current refined element
+//   - 10: dump the triangulation in a file at each iteration
+//#define CGAL_MESH_3_VERY_VERBOSE 2
+
 // Use optimisations of Mesh_3
 #  define CGAL_INTRUSIVE_LIST 1
 #  define CGAL_CONSTRUCT_INTRUSIVE_LIST_RANGE_CONSTRUCTOR 1
