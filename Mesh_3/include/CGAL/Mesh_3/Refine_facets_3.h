@@ -48,12 +48,14 @@
 #include <boost/optional.hpp>
 #ifndef CGAL_NDEBUG
 #  include <boost/optional/optional_io.hpp>
+#  include <CGAL/Mesh_3/Dump_c3t3.h>
 #endif
 #include <boost/mpl/has_xxx.hpp>
 #include <boost/mpl/if.hpp>
 #include <CGAL/tuple.h>
 #include <boost/type_traits/is_convertible.hpp>
 #include <sstream>
+
 
 namespace CGAL {
 
@@ -289,19 +291,26 @@ public:
 
   void scan_triangulation_impl_amendement() const {}
 
-  void debug_facet(const Facet facet, std::ostream& cerr) const {
+  void debug_facet(const Facet facet, std::ostream& cerr,
+                                      int verbose_level) const {
     const Cell_handle c = facet.first;
     const int i = facet.second;
-    cerr << "\nFacet (" << c->vertex((i+1)&3)->point() << " , "
-	 << "\n       " << c->vertex((i+2)&3)->point() << " , "
-	 << "\n       " << c->vertex((i+3)&3)->point() << ") :"
-	 << "\n  refinement point is "
+    const Facet mirror_facet = r_tr_.mirror_facet(facet);
+    cerr << "\nFacet( " << *c->vertex((i+1)&3) << " , "
+	 << "\n       " << *c->vertex((i+2)&3) << " , "
+	 << "\n       " << *c->vertex((i+3)&3) << " ) :"
+         << "\n  - 4th vertex in cell:      " << *c->vertex(i)
+         << "\n  - 5th vertex (other cell): "
+         << *mirror_facet.first->vertex(mirror_facet.second);
+    if(verbose_level < 1) { cerr << std::endl; return; }
+    cerr << "\n  refinement point is "
 	 << this->get_facet_surface_center(facet) << std::endl;
+    if(verbose_level < 2) return;
     if(this->r_tr_.is_infinite(c) ||
        this->r_tr_.is_infinite(r_tr_.mirror_facet(facet).first))
-      {
-	cerr << "  - the facet is on CONVEX HULL\n";
-      } else {
+    {
+      cerr << "  - the facet is on CONVEX HULL\n";
+    } else {
       Bare_point p1, p2;
       this->dual_segment(facet, p1, p2);
       cerr << "  - the dual segment:\n"
@@ -343,6 +352,8 @@ public:
       cerr << "  - exact p1 is in domain: " << is_in_domain(p1) << "\n";
       cerr << "  - exact p2 is in domain: " << is_in_domain(p2) << "\n";
     }
+    if(verbose_level < 10) return;
+    dump_c3t3(r_c3t3_, "dump");
   }
 
   /// Gets the point to insert from the element to refine
@@ -350,7 +361,7 @@ public:
   {
     CGAL_assertion_debug (this->is_facet_on_surface(facet),
 			  ([this, facet] { this->debug_facet(facet,
-							     std::cerr); }));
+							     std::cerr, 2); }));
     this->set_last_vertex_index(get_facet_surface_center_index(facet));
     return get_facet_surface_center(facet);
   };
@@ -393,17 +404,11 @@ public:
   }
 
   std::string debug_info_element_impl(const Facet &facet,
-                                      int /*verbose_level*/) const
+                                      int verbose_level) const
   {
     std::stringstream sstr;
     sstr.precision(17);
-    sstr << "Facet { " << std::endl
-    << "  - " << *facet.first->vertex((facet.second+1)%4)  << std::endl
-    << "  - " << *facet.first->vertex((facet.second+2)%4)  << std::endl
-    << "  - " << *facet.first->vertex((facet.second+3)%4)  << std::endl
-    << "  - 4th vertex in cell: " << *facet.first->vertex(facet.second)  << std::endl
-    << "}" << std::endl;
-
+    debug_facet(facet, sstr, verbose_level);
     return sstr.str();
   }
 

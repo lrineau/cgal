@@ -596,7 +596,11 @@ public:
       std::cerr << "rejected (permanent)\n";
       break;
     case REFINEMENT_POINT_IS_ALREADY_INSERTED:
-      std::cerr << "ERROR!\n";
+      std::cerr << "ERROR: the refinement point ("
+                << p
+                << ") is already inserted!\n"
+                << "debug information follows:\n"
+                << debug_info_element(e, 10) << std::endl;
       CGAL_error();
       break;
     case THE_FACET_TO_REFINE_IS_NOT_IN_ITS_CONFLICT_ZONE:
@@ -614,6 +618,14 @@ public:
       break;
     }
 #endif // CGAL_MESHES_DEBUG_REFINEMENT_POINTS || CGAL_MESH_3_VERY_VERBOSE
+    if(result== REFINEMENT_POINT_IS_ALREADY_INSERTED) {
+      std::cerr << "ERROR: the refinement point ("
+                << p
+                << ") is already inserted!\n"
+                << "debug information follows:\n"
+                << debug_info_element(e, 10) << std::endl;
+      CGAL_error();
+    }
 
     if(result == NO_CONFLICT)
     {
