@@ -392,7 +392,8 @@ public:
     return "#facets to refine";
   }
 
-  std::string debug_info_element_impl(const Facet &facet) const
+  std::string debug_info_element_impl(const Facet &facet,
+                                      int /*verbose_level*/) const
   {
     std::stringstream sstr;
     sstr.precision(17);

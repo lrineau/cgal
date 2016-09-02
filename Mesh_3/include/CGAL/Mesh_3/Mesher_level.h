@@ -183,9 +183,9 @@ protected:
     return derived().debug_info_class_name_impl();
   }
 
-  std::string debug_info_element(const Element &e) const
+  std::string debug_info_element(const Element &e, int verbose_level = 0) const
   {
-    return derived().debug_info_element_impl(e);
+    return derived().debug_info_element_impl(e, verbose_level);
   }
 
   /** \name Private member datas */

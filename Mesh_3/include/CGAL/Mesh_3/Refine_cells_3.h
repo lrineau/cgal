@@ -467,7 +467,8 @@ public:
     return s.str();
   }
 
-  std::string debug_info_element_impl(const Cell_handle &ch) const
+  std::string debug_info_element_impl(const Cell_handle &ch,
+                                      int /*verbose_level*/) const
   {
     std::stringstream sstr;
     sstr.precision(17);
