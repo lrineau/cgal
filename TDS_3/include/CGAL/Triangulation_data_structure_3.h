@@ -2496,14 +2496,23 @@ Triangulation_data_structure_3<Vb,Cb,Ct>::insert_first_finite_cell(
   if (v_infinite == Vertex_handle())
     v_infinite = create_vertex();
 
-  set_dimension(3);
-
   v0 = create_vertex();
   v1 = create_vertex();
   v2 = create_vertex();
   v3 = create_vertex();
 
-  Cell_handle c0123 = create_cell(v0,         v1,   v2,   v3);
+  Cell_handle c0123;
+  if(dimension() == -2) {
+    c0123 = create_cell(v0, v1,   v2,   v3);
+  } else {
+    CGAL_assertion(dimension() == -1);
+    // There is already *one* cell in the TDS, and it must be recycled.
+    c0123 = cells().begin();
+    c0123->set_vertices(v0, v1,   v2,   v3);
+  }
+
+  set_dimension(3);
+
   Cell_handle ci012 = create_cell(v_infinite, v0,   v1,   v2);
   Cell_handle ci103 = create_cell(v_infinite, v1,   v0,   v3);
   Cell_handle ci023 = create_cell(v_infinite, v0,   v2,   v3);
@@ -2526,7 +2535,7 @@ Triangulation_data_structure_3<Vb,Cb,Ct>::insert_first_finite_cell(
   set_adjacency(ci103, 1, ci023, 2);
   set_adjacency(ci023, 1, ci132, 1);
   set_adjacency(ci103, 2, ci132, 3);
-
+  CGAL_assertion(is_valid());
   return v_infinite;
 }
 
