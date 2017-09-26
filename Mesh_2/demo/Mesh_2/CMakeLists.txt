@@ -10,6 +10,8 @@ endif()
 if(POLICY CMP0043)
   cmake_policy(SET CMP0043 OLD)
 endif()
+
+add_subdirectory(Qt3)
  
 find_package(CGAL QUIET)
 include( ${CGAL_USE_FILE} )

@@ -222,7 +222,7 @@ if( NOT CGAL_MACROS_FILE_INCLUDED )
           message (STATUS "Configured ${lib} from UseLIB-file: ${usefile}")
 
           # UseLIB-file has to set ${vlib}_SETUP to TRUE
-          # TODO EBEB what about Qt5, zlib?
+          # TODO EBEB what about Qt5, Qt3, zlib?
 
         else()
 
@@ -297,6 +297,11 @@ if( NOT CGAL_MACROS_FILE_INCLUDED )
 
       endif()
 
+      if (${component} STREQUAL "Qt3")
+        find_package( OpenGL QUIET )
+        find_package( Qt3-patched QUIET )
+      endif()
+
       if (${component} STREQUAL "Qt5")
         find_package(OpenGL QUIET)
         find_package(Qt5 COMPONENTS OpenGL Gui Core Script ScriptTools QUIET)
@@ -331,6 +336,11 @@ if( NOT CGAL_MACROS_FILE_INCLUDED )
               include_directories( SYSTEM ${ZLIB_INCLUDE_DIR} )
             endif(ZLIB_FOUND)
 
+          endif()
+
+          if (${component} STREQUAL "Qt3")
+            find_package( OpenGL )
+            find_package( Qt3-patched )
           endif()
 
           if (${component} STREQUAL "Qt5")

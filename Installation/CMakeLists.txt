@@ -425,6 +425,7 @@ if ( RUNNING_CGAL_AUTO_TEST )
                   CGAL_MAINTENANCE_PACKAGE_DIR
                   CGAL_PDB_BINARY_DIR
                   CGAL_PDB_SOURCE_DIR
+                  CGAL_Qt3_SOURCE_DIR
                   CGAL_BINARY_DIR
                   CGAL_SOURCE_DIR)
 #        message("List of cache variables:")
@@ -574,7 +575,7 @@ message("== Detect external libraries ==")
 
 # this is the place to tell which external libs are supporting
 # Remarks: 
-#  External libs configured when Qt5 lib of cgal are required
+#  External libs Qt3 and Qt34are configured when Qt3 or Qt5 as lib of cgal are required
 #  Coin is used in KDS, but no FindCoin or FindCOIN exists
 #  There exists FindF2C, FindIPE, FindMKL, but they are only used to support supporting libs
 list (INSERT CGAL_SUPPORTING_3RD_PARTY_LIBRARIES 0 GMP MPFR ZLIB OpenGL LEDA MPFI RS RS3 OpenNL Eigen3 BLAS LAPACK QGLViewer ESBTL Coin3D NTL IPE)

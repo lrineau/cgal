@@ -60,6 +60,9 @@ CGAL packages, some are only needed for demos.
    * Visualization
      Required for most demos
 
+     - Qt3 (>= 3.3)
+       ftp://ftp.qt.nokia.com/qt/source/
+
      - Qt5 (>= 5.3)
        http://qt-project.org/
 
