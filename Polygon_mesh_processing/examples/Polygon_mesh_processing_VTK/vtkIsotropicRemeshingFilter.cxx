@@ -214,20 +214,12 @@ int vtkIsotropicRemeshingFilter::RequestInformation(vtkInformation *, vtkInforma
       if(diagonal > max_diag)
         max_diag = diagonal;
     }
-    char *outstring = new char[300];
-    sprintf (outstring, "min(%f, %f, %f)\n max(%f, %f, %f)",extreme[0], extreme[2], extreme[4], extreme[1], extreme[3], extreme[5]);
-    SetBboxInfo(outstring);
-    delete [] outstring;
 
     SetLengthInfo(0.01*max_diag);
   }
  else
  {
    double * bounds = input->GetBounds();
-   char *outstring = new char[300];
-   sprintf (outstring, "min(%f, %f, %f)\n max(%f, %f, %f)",bounds[0], bounds[2], bounds[4], bounds[1], bounds[3], bounds[5]);
-   SetBboxInfo(outstring);
-   delete [] outstring;
    double diagonal = std::sqrt(
          (bounds[0]-bounds[1]) * (bounds[0]-bounds[1]) +
        (bounds[2]-bounds[3]) * (bounds[2]-bounds[3]) +

@@ -48,10 +48,7 @@ if(ParaView_FOUND)
   ADD_PARAVIEW_PLUGIN(IsotropicRemeshingFilter "1.0"
     SERVER_MANAGER_XML IsotropicRemeshingFilter.xml
     SERVER_MANAGER_SOURCES vtkIsotropicRemeshingFilter.cxx
-    GUI_INTERFACES ${outifaces0}
-    SOURCES ${outsrcs0}
-            ${moc_srcs}
-    pqIsotropicRemeshingWidget.cxx)
+    )
   endif(PARAVIEW_BUILD_QT_GUI)
 else()
   message("WARNING : The Paraview plugins need Paraview, so they won't be compiled.")

@@ -24,22 +24,6 @@
           The input Meshes.
         </Documentation>
       </InputProperty>
-      <StringVectorProperty name="Bbox"
-        command="SetBbox"
-        label="Bbox"
-        default_values="0"
-        panel_widget="bbox_panel"
-        information_property="BboxInfo"
-        >
-        <Documentation>
-          The extreme points of the biggest BBox amongst the treated meshes.
-        </Documentation>
-      </StringVectorProperty>
-      <StringVectorProperty name="BboxInfo"
-                            command="GetBboxInfo"
-                            information_only="1">
-        <SimpleStringInformationHelper />
-      </StringVectorProperty>
       <DoubleVectorProperty name="Length"
         command="SetLength"
         label="Target Edge Length"
