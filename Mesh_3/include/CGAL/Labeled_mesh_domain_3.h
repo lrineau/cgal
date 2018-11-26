@@ -427,7 +427,7 @@ public:
                                    )
                                   (optional
                                    (relative_error_bound_, (const FT&),
-                                    FT(1e-3))
+                                    FT(1e-8))
                                    (value_outside_, *, 0)
                                    (p_rng_, (CGAL::Random*), (CGAL::Random*)(0))
                                    (image_values_to_subdomain_indices_, *,

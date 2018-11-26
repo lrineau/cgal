@@ -1,3 +1,4 @@
+#define CGAL_MESH_3_VERBOSE 1
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 
 #include <CGAL/Mesh_triangulation_3.h>
@@ -45,11 +46,10 @@ int main(int argc, char* argv[])
   /// [Domain creation]
 
   // Mesh criteria
-  Mesh_criteria criteria(facet_angle=30, facet_size=6, facet_distance=4,
-                         cell_radius_edge_ratio=3, cell_size=8);
+  Mesh_criteria criteria(facet_angle=30, facet_size=6, facet_distance=0.02);
 
   /// [Meshing]
-  C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
+  C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_perturb(), no_exude());
   /// [Meshing]
 
   // Output
