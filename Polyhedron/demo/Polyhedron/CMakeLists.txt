@@ -28,7 +28,7 @@ if(has_cpp11 LESS 0)
 endif()
 
 # Use C++11 for this directory and its sub-directories.
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 #Defines flags to emulate windows behavior for linking error generation
