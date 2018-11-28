@@ -80,7 +80,7 @@ public:
 
   /// Constructor
   Labeled_image_mesh_domain_3(const Image& image,
-                              const FT& error_bound = FT(1e-3),
+                              const FT& error_bound = FT(1e-8),
                               Subdomain_index value_outside = 0,
                               Null null = Null(),
                               CGAL::Random* p_rng = NULL)

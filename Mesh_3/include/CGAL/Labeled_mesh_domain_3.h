@@ -203,7 +203,7 @@ protected:
                                      Mesh_3::internal::Do_not_delete()))
     , squared_error_bound_
       ( squared_error_bound(bbox_,
-                            args[parameters::relative_error_bound|FT(1e-3)]))
+                            args[parameters::relative_error_bound|FT(1e-8)]))
   {
   }
 
@@ -344,7 +344,7 @@ public:
    */
   Labeled_mesh_domain_3(const Function& f,
                         const Sphere_3& bounding_sphere,
-                        const FT& error_bound = FT(1e-3),
+                        const FT& error_bound = FT(1e-8),
                         Null null = Null_subdomain_index(),
                         CGAL::Random* p_rng = NULL)
     : Impl_details(f, bounding_sphere,
@@ -354,7 +354,7 @@ public:
 
   Labeled_mesh_domain_3(const Function& f,
                         const Bbox_3& bbox,
-                        const FT& error_bound = FT(1e-3),
+                        const FT& error_bound = FT(1e-8),
                         Null null = Null_subdomain_index(),
                         CGAL::Random* p_rng = NULL)
     : Impl_details(f, bbox,
@@ -364,7 +364,7 @@ public:
 
   Labeled_mesh_domain_3(const Function& f,
                         const Iso_cuboid_3& bbox,
-                        const FT& error_bound = FT(1e-3),
+                        const FT& error_bound = FT(1e-8),
                         Null null = Null_subdomain_index(),
                         CGAL::Random* p_rng = NULL)
     : Impl_details(f, bbox, error_bound,
@@ -392,7 +392,7 @@ public:
                                    (iso_value_, *, 0)
                                    (value_outside_, *, 0)
                                    (relative_error_bound_, (const FT&),
-                                    FT(1e-3))
+                                    FT(1e-8))
                                    (p_rng_, (CGAL::Random*), (CGAL::Random*)(0))
                                    (image_values_to_subdomain_indices_, *,
                                     Null_functor())
@@ -463,7 +463,7 @@ public:
                                    )
                                   (optional
                                    (relative_error_bound_, (const FT&),
-                                    FT(1e-3))
+                                    FT(1e-8))
                                    (p_rng_, (CGAL::Random*), (CGAL::Random*)(0))
                                    (null_subdomain_index_,*,Null_functor())
                                    (construct_surface_patch_index_, *,

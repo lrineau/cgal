@@ -71,7 +71,7 @@ public:
   Gray_image_mesh_domain_3(const Image& image,
                            const Image_word_type iso_value,
                            const Image_word_type value_outside = 0.,
-                           const FT& error_bound = FT(1e-3),
+                           const FT& error_bound = FT(1e-8),
                            CGAL::Random* p_rng = NULL)
     : Base(Wrapper(image, 
                    Transform(iso_value),
@@ -86,7 +86,7 @@ public:
   Gray_image_mesh_domain_3(const Image& image,
                            const Transform& transform,
                            const Image_word_type value_outside = 0.,
-                           const FT& error_bound = FT(1e-3),
+                           const FT& error_bound = FT(1e-8),
                            CGAL::Random* p_rng = NULL)
     : Base(Wrapper(image, transform, transform(value_outside)),
            Mesh_3::internal::compute_bounding_box(image),
