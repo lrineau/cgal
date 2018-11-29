@@ -6,6 +6,12 @@ Release 4.14
 
 Release date: March 2019
 
+### 2D and 3D Linear Geometry Kernel
+
+-   Add concept `ComputeApproximate_kernel_3` to the `Kernel`. It has operators for computing
+    the angle between two 3D vectors, as well as for three 3D points `p`, `q`, and `r`,
+    representing the angles `p - q `, and `r - q`.
+
 ### Polygon Mesh Processing package
 -   Added the following new functions to detect and repair issues in polygon soups:
     - `CGAL::Polygon_mesh_processing::remove_isolated_points_in_polygon_soup()`, which detects and removes
