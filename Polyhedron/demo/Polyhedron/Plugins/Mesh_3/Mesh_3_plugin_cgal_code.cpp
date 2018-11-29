@@ -270,7 +270,7 @@ Meshing_thread* cgal_code_mesh_3(const Image* pImage,
     Image_mesh_domain* p_domain = new Image_mesh_domain
       (Image_mesh_domain::create_labeled_image_mesh_domain
        (p::image = *pImage,
-        p::relative_error_bound = 1e-6,
+        p::relative_error_bound = 1e-8,
         p::construct_surface_patch_index =
           [](int i, int j) { return (i * 1000 + j); }
         )
