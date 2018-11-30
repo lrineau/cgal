@@ -83,7 +83,7 @@ Angle angle(const CGAL::Point_3<Kernel>&p,
 /*!
 returns an approximation of the angle between `p-q` and `r-q`.
 The angle is given in degrees.
-\pre `p`and `r` are not equal to `q`.
+\pre `p` and `r` are not equal to `q`.
 */
 template <typename Kernel>
 Kernel::FT approximate_angle(const CGAL::Point_3<Kernel>& p,
