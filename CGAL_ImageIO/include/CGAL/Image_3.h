@@ -469,20 +469,25 @@ Image_3::labellized_trilinear_interpolation
   const int k1 = (int)(lx);
 
   static constexpr int offset_width = 5;
-  static constexpr int width = 2*offset_width+1;
-  CGAL::cpp11::array<Image_word_type,width*width*width> labels;
+  static constexpr double epsilon = 0.2; // inverse of the critical radius
+
+  static constexpr int width = 2*(offset_width+1);
+  static constexpr int size_of_labels =
+    (std::min)(sizeof(Image_word_type)*(2 << CHAR_BIT),
+               std::size_t(width)*width*width);
+  CGAL::cpp11::array<Image_word_type,size_of_labels> labels;
   
   int lc = 0;
   for(int i = (std::max)(0, i1-offset_width),
-        end = (std::min)(int(dimz), i1+offset_width);
+        end = (std::min)(int(dimz), i1+offset_width+1);
       i < end; ++i)
   {
     for(int j = (std::max)(0, j1-offset_width),
-          end = (std::min)(int(dimy), j1+offset_width);
+          end = (std::min)(int(dimy), j1+offset_width+1);
         j < end; ++j)
     {
       for(int k = (std::max)(0, k1-offset_width),
-            end = (std::min)(int(dimx), k1+offset_width);
+            end = (std::min)(int(dimx), k1+offset_width+1);
           k < end; ++k)
       {
         const int index = (i * dimy + j) * dimx + k;
@@ -517,23 +522,23 @@ Image_3::labellized_trilinear_interpolation
     double r = 0.;
 
     for(int i = (std::max)(0, i1-offset_width),
-          end = (std::min)(int(dimz), i1+offset_width);
+          end = (std::min)(int(dimz), i1+offset_width+1);
         i < end; ++i)
     {
       for(int j = (std::max)(0, j1-offset_width),
-            end = (std::min)(int(dimy), j1+offset_width);
+            end = (std::min)(int(dimy), j1+offset_width+1);
           j < end; ++j)
       {
         for(int k = (std::max)(0, k1-offset_width),
-              end = (std::min)(int(dimx), k1+offset_width);
+              end = (std::min)(int(dimx), k1+offset_width+1);
             k < end; ++k)
         {
           const int index = (i * dimy + j) * dimx + k;
           if(iwt == ((Image_word_type*)image()->data)[index])
           {
-            r += std::exp(-1.  *(CGAL::square(lz-i)+
-                                 CGAL::square(ly-j)+
-                                 CGAL::square(lx-k)));
+            r += std::exp(-epsilon * (CGAL::square(lz-i)+
+                                      CGAL::square(ly-j)+
+                                      CGAL::square(lx-k)));
           }
         }
       }
