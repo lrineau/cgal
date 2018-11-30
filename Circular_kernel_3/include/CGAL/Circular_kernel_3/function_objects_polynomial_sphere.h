@@ -1596,6 +1596,7 @@ template < class SK > \
 #endif
   {
     typedef typename SK::Point_3                   Point_3;
+    typedef typename SK::Vector_3                  Vector_3;
     typedef typename SK::Circular_arc_3            Circular_arc_3;
     typedef typename SK::FT                        FT;
 
@@ -1608,6 +1609,11 @@ template < class SK > \
 #else
     typedef typename SK::Linear_kernel::Compute_approximate_angle_3 LK_Compute_approximate_angle_3;
     
+    FT operator()(const Vector_3& u, const Vector_3& v) const
+    {
+      return LK_Compute_approximate_angle_3()(u,v);
+    }
+
     FT operator()(const Point_3& p, const Point_3& q, const Point_3& r) const
     {
       return LK_Compute_approximate_angle_3()(p,q,r);
