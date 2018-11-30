@@ -45,6 +45,9 @@ int main(int argc, char** argv)
   const int wdim = image->wdim;
 
   _image image2 = *image;
+  image2.tx = wdim * xmin;
+  image2.ty = wdim * ymin;
+  image2.tz = wdim * zmin;
   image2.xdim = new_n1;
   image2.ydim = new_n2;
   image2.zdim = new_n3;
