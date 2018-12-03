@@ -43,6 +43,12 @@
 #  pragma warning(disable:4244 4251) // double float conversion loss of data and dll linkage
 #endif
 
+extern bool use_value_outside;
+extern int interpolation_method;
+extern int interpolation_width;
+extern double gaussian_epsilon;
+
+
 class vtkImageData;
 
 namespace CGAL {
@@ -231,6 +237,60 @@ public:
             typename Indicator_factory>
   Target_type
   labellized_trilinear_interpolation
+    (const Coord_type&x,
+     const Coord_type&y,
+     const Coord_type&z,
+     const Target_type& value_outside,
+     const Indicator_factory indicator_factory) const;
+
+  template <typename Image_word_type,
+	    typename Coord_type,
+            typename Target_type>
+  Target_type
+  labellized_rbf_approximation(const Coord_type&x,
+				     const Coord_type&y,
+				     const Coord_type&z,
+				     const Target_type& value_outside =
+  				       Target_type()) const
+  {
+    CGAL::ImageIO::Indicator_factory<Image_word_type> indicator_factory;
+    return labellized_rbf_approximation<Image_word_type>
+      (x, y, z, value_outside, indicator_factory);
+  }
+
+  template <typename Image_word_type,
+	    typename Coord_type,
+            typename Target_type,
+            typename Indicator_factory>
+  Target_type
+  labellized_rbf_approximation
+    (const Coord_type&x,
+     const Coord_type&y,
+     const Coord_type&z,
+     const Target_type& value_outside,
+     const Indicator_factory indicator_factory) const;
+
+  template <typename Image_word_type,
+	    typename Coord_type,
+            typename Target_type>
+  Target_type
+  labellized_tricubic_interpolation(const Coord_type&x,
+				     const Coord_type&y,
+				     const Coord_type&z,
+				     const Target_type& value_outside =
+  				       Target_type()) const
+  {
+    CGAL::ImageIO::Indicator_factory<Image_word_type> indicator_factory;
+    return labellized_tricubic_interpolation<Image_word_type>
+      (x, y, z, value_outside, indicator_factory);
+  }
+
+  template <typename Image_word_type,
+	    typename Coord_type,
+            typename Target_type,
+            typename Indicator_factory>
+  Target_type
+  labellized_tricubic_interpolation
     (const Coord_type&x,
      const Coord_type&y,
      const Coord_type&z,
@@ -444,7 +504,7 @@ Image_3::labellized_trilinear_interpolation
    const Indicator_factory indicator_factory) const
 {
   // Check on double/float coordinates, because (int)-0.1 gives 0
-  if ( x < 0 || y < 0 || z < 0 ) return value_outside;
+  if ( use_value_outside && (x < 0 || y < 0 || z < 0) ) return value_outside;
   
   Coord_type lx = x / image()->vx;
   Coord_type ly = y / image()->vy;
@@ -453,12 +513,14 @@ Image_3::labellized_trilinear_interpolation
   const std::size_t dimy = ydim();
   const std::size_t dimz = zdim();
   
-  if( lx < 0 ||
+  if( use_value_outside &&
+    ( lx < 0 ||
       ly < 0 ||
       lz < 0 ||
      lz >= Coord_type(dimz-1) ||
      ly >= Coord_type(dimy-1) ||
-     lx >= Coord_type(dimx-1))
+     lx >= Coord_type(dimx-1)
+      ))
   {
     return value_outside;
   }  
@@ -468,89 +530,213 @@ Image_3::labellized_trilinear_interpolation
   const int j1 = (int)(ly);
   const int k1 = (int)(lx);
 
-  static constexpr int offset_width = 5;
-  static constexpr double epsilon = 0.2; // inverse of the critical radius
-
-  static constexpr int width = 2*(offset_width+1);
-  static constexpr int size_of_labels =
-    (std::min)(sizeof(Image_word_type)*(2 << CHAR_BIT),
-               std::size_t(width)*width*width);
-  CGAL::cpp11::array<Image_word_type,size_of_labels> labels;
-  
   int lc = 0;
-  for(int i = (std::max)(0, i1-offset_width),
-        end = (std::min)(int(dimz), i1+offset_width+1);
-      i < end; ++i)
-  {
-    for(int j = (std::max)(0, j1-offset_width),
-          end = (std::min)(int(dimy), j1+offset_width+1);
-        j < end; ++j)
-    {
-      for(int k = (std::max)(0, k1-offset_width),
-            end = (std::min)(int(dimx), k1+offset_width+1);
-          k < end; ++k)
-      {
-        const int index = (i * dimy + j) * dimx + k;
-        bool found = false;
-        Image_word_type iwt = ((Image_word_type*)image()->data)[index];
-        for(int lcj=0; lcj < lc; ++lcj){
-          if(iwt == labels[lcj]){
-            found = true;
-            break;
-          }
+  CGAL::cpp11::array<Image_word_type,sizeof(Image_word_type)*(1 << CHAR_BIT)> labels;
+  if(interpolation_method != 2) { // trilinear or tricubic interpolation
+    const int i2 = i1 + 1;
+    const int j2 = j1 + 1;
+
+    CGAL::cpp11::array<std::size_t,8> index;
+    index[0] = (i1 * dimy + j1) * dimx + k1;
+    index[1] = index[0] + 1;
+    index[2] = (i1 * dimy + j2) * dimx + k1;
+    index[3] = index[2] + 1;
+    index[4] = (i2 * dimy + j1) * dimx + k1;
+    index[5] = index[4] + 1;
+    index[6] = (i2 * dimy + j2) * dimx + k1;
+    index[7] = index[6] + 1;
+
+    labels[0] = ((Image_word_type*)image()->data)[index[0]];
+    ++lc;
+    for(int lci=1; lci<8; ++lci){
+      bool found = false;
+      Image_word_type iwt = ((Image_word_type*)image()->data)[index[lci]];
+      for(int lcj=0; lcj < lc; ++lcj){
+        if(iwt == labels[lcj]){
+          found = true;
+          break;
         }
-        if(found) continue;
-        labels[lc] = iwt;
-        ++lc;
       }
+      if(found) continue;
+      labels[lc] = iwt;
+      ++lc;
     }
   }
+  else { // rfb gaussian
+    for(int i = (std::max)(0, i1-interpolation_width),
+          end = (std::min)(int(dimz), i1+interpolation_width+1);
+        i < end; ++i)
+      {
+        for(int j = (std::max)(0, j1-interpolation_width),
+              end = (std::min)(int(dimy), j1+interpolation_width+1);
+            j < end; ++j)
+          {
+            for(int k = (std::max)(0, k1-interpolation_width),
+                  end = (std::min)(int(dimx), k1+interpolation_width+1);
+                k < end; ++k)
+              {
+                const int index = (i * dimy + j) * dimx + k;
+                bool found = false;
+                Image_word_type iwt = ((Image_word_type*)image()->data)[index];
+                for(int lcj=0; lcj < lc; ++lcj){
+                  if(iwt == labels[lcj]){
+                    found = true;
+                    break;
+                  }
+                }
+                if(found) continue;
+                labels[lc] = iwt;
+                ++lc;
+              }
+          }
+      }
 
-  CGAL_HISTOGRAM_PROFILER(
-    "Number of labels around a vertex, Image_3::labellized_trilinear_interpolation()", 
-    static_cast<unsigned int>(lc));
-
+    CGAL_HISTOGRAM_PROFILER(
+                            "Number of labels around a vertex, Image_3::labellized_trilinear_interpolation()", 
+                            static_cast<unsigned int>(lc));
+  } // end rfb gaussian
   if(lc == 1) {
     return static_cast<Target_type>(labels[0]);
   }
 
   double best_value = 0.;
   Image_word_type best = 0;
-  for(int l = 0; l < lc; ++l)
-  {
-    const Image_word_type iwt = labels[l];
-    double r = 0.;
-
-    for(int i = (std::max)(0, i1-offset_width),
-          end = (std::min)(int(dimz), i1+offset_width+1);
-        i < end; ++i)
+  switch(interpolation_method) {
+  case 0: {// trilinear 
+    for(int i = 0; i < lc; ++i)
     {
-      for(int j = (std::max)(0, j1-offset_width),
-            end = (std::min)(int(dimy), j1+offset_width+1);
-          j < end; ++j)
-      {
-        for(int k = (std::max)(0, k1-offset_width),
-              end = (std::min)(int(dimx), k1+offset_width+1);
-            k < end; ++k)
+      Image_word_type iwt = labels[i];
+      const double r = 
+        trilinear_interpolation<Image_word_type,double,Coord_type>(
+          x, y, z, value_outside, indicator_factory.indicator(iwt));
+  
+      if(r > best_value) {
+        best = iwt;
+        best_value = r;
+      }
+    }
+    break;
+  }
+  case 1: { // tricubic
+    auto clamp = [](const int min, const int max) {
+                   return [min, max](const int i) {
+                            if(i > max) return max;
+                            if(i < min) return min;
+                            return i;
+                          };
+                 };
+
+    auto scale = [](const auto functor, const int scale_factor) {
+                   return [functor, scale_factor](const int i) {
+                            return functor(i) * scale_factor;
+                          };
+                 };
+
+    auto generate_coeff = [](Coord_type f) {
+                            assert(f >= 0. && f < 1.);
+                            typedef decltype(f) T;
+                            static const T half = T(0.5);
+
+                            // cubic interpolation
+                            const T fm1 = f - 1;
+                            const T fd2 = f*half;
+                            const T ft3 = f*3;
+                            const T F0 = -fd2*fm1*fm1;
+                            const T F1 = ((ft3 - 2)*fd2 - 1)*fm1;
+                            const T F2 = -((ft3 - 4)*f - 1)*fd2;
+                            const T F3 = f*fd2*fm1;
+
+                            return [F0, F1, F2, F3](const auto& a) {
+                                     return a[0]*F0+a[1]*F1+a[2]*F2+a[3]*F3;
+                                   };
+                          };
+
+    auto interp_x = generate_coeff(lx-k1);
+    auto interp_y = generate_coeff(ly-j1);
+    auto interp_z = generate_coeff(lz-i1);
+
+    std::array<int, 4> coord_z = { i1 - 1, i1, i1+1, i1+2 };
+    std::array<int, 4> coord_y = { j1 - 1, j1, j1+1, j1+2 };
+    std::array<int, 4> coord_x = { k1 - 1, k1, k1+1, k1+2 };
+    std::transform(coord_x.begin(), coord_x.end(), coord_x.begin(),
+                   clamp(0, dimx-1));
+    std::transform(coord_y.begin(), coord_y.end(), coord_y.begin(),
+                   scale(clamp(0, dimy-1), dimx));
+    std::transform(coord_z.begin(), coord_z.end(), coord_z.begin(),
+                   scale(clamp(0, dimz-1), dimy*dimx));
+
+    const Image_word_type* const ptr = (Image_word_type*)image()->data;
+
+    for(int i = 0; i < lc; ++i) {
+      auto indicator = indicator_factory.indicator(labels[i]);
+
+      auto apply_interp_x =
+        [interp_x, coord_x, indicator](const Image_word_type* const ptr) {
+          return interp_x(std::array<double, 4>{  indicator(ptr[coord_x[0]]),
+                                                  indicator(ptr[coord_x[1]]),
+                                                  indicator(ptr[coord_x[2]]),
+                                                  indicator(ptr[coord_x[3]])  });
+        };
+      auto apply_interp_y =
+        [interp_y, apply_interp_x, coord_y](const Image_word_type* const ptr)
         {
-          const int index = (i * dimy + j) * dimx + k;
-          if(iwt == ((Image_word_type*)image()->data)[index])
+          return interp_y(std::array<double, 4>{  apply_interp_x(ptr+coord_y[0]),
+                                                  apply_interp_x(ptr+coord_y[1]),
+                                                  apply_interp_x(ptr+coord_y[2]),
+                                                  apply_interp_x(ptr+coord_y[3])  });
+        };
+
+      const double val =
+        interp_z(std::array<double, 4>{  apply_interp_y(ptr+coord_z[0]),
+                                         apply_interp_y(ptr+coord_z[1]),
+                                         apply_interp_y(ptr+coord_z[2]),
+                                         apply_interp_y(ptr+coord_z[3])  });
+
+      if(val > best_value) {
+        best = labels[i];
+        best_value = val;
+      }
+    }
+    break;
+  }
+  case 2: {
+    for(int l = 0; l < lc; ++l)
+    {
+      const Image_word_type iwt = labels[l];
+      double r = 0.;
+  
+      for(int i = (std::max)(0, i1-interpolation_width),
+            end = (std::min)(int(dimz), i1+interpolation_width+1);
+          i < end; ++i)
+      {
+        for(int j = (std::max)(0, j1-interpolation_width),
+              end = (std::min)(int(dimy), j1+interpolation_width+1);
+            j < end; ++j)
+        {
+          for(int k = (std::max)(0, k1-interpolation_width),
+                end = (std::min)(int(dimx), k1+interpolation_width+1);
+              k < end; ++k)
           {
-            r += std::exp(-epsilon * (CGAL::square(lz-i)+
-                                      CGAL::square(ly-j)+
-                                      CGAL::square(lx-k)));
+            const int index = (i * dimy + j) * dimx + k;
+            if(iwt == ((Image_word_type*)image()->data)[index])
+            {
+              r += std::exp(-gaussian_epsilon * (CGAL::square(lz-i)+
+                                                 CGAL::square(ly-j)+
+                                                 CGAL::square(lx-k)));
+            }
           }
         }
       }
+      if(r > best_value) {
+        // std::cerr << "  " << r << " is best than " << best_value << std::endl;
+        best = iwt;
+        best_value = r;
+      }
     }
-    if(r > best_value) {
-      // std::cerr << "  " << r << " is best than " << best_value << std::endl;
-      best = iwt;
-      best_value = r;
-    }
+    break;
   }
-  // std::cerr << "DONE.\n";
-//   CGAL_assertion(best_value > 0.5);
+  default: CGAL_ASSUME(false);
+  }
   return static_cast<Target_type>(best);
 }
 
