@@ -1784,7 +1784,7 @@ public:
 
   /*!
     returns an approximation of the angle between `u` and `v`.
-    The angle is given in degrees.
+    The angle is given in rad.
     \pre `u`and `v` are not equal to the null vector.
   */
   Kernel::FT operator()(const Kernel::Vector_3& u,
@@ -1792,7 +1792,7 @@ public:
   
   /*!
     returns an approximation of the angle between `p-q` and `r-q`.
-    The angle is given in degrees.
+    The angle is given in rad.
     \pre `p` and `r` are not equal to `q`.
   */
   Kernel::FT operator()(const Kernel::Point_3& p,
@@ -1823,6 +1823,7 @@ public:
     The sign is negative if `orientation(p,q,r,s)` is `CGAL::NEGATIVE` and positive otherwise.
     The angle is given in degrees.
     \pre `p,q,r` and `p,q,s` are not collinear.
+    \warning Before \cgal 4.14 the angle was given in degree.
   */
   Kernel::FT operator()(const Kernel::Point_3& p,
                         const Kernel::Point_3& q,
