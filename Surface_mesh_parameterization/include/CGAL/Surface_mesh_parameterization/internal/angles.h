@@ -88,36 +88,6 @@ typename K::FT fix_sine(typename K::FT sine)
     return sine;
 }
 
-//                                                                       ->  ->
-// Returns the angle (in radians) of the corner (P,Q,R) (i.e. the angle (QP, QR) ).
-template<typename K>
-typename K::FT compute_angle_rad(const typename K::Point_3& P,
-                                 const typename K::Point_3& Q,
-                                 const typename K::Point_3& R)
-{
-  typedef typename K::FT                           NT;
-  typedef typename K::Vector_3                     Vector_3;
-
-  Vector_3 u = P - Q;
-  Vector_3 v = R - Q;
-
-  NT product = CGAL::sqrt(u * u) * CGAL::sqrt(v * v);
-  if(product == NT(0))
-    return 0;
-
-  // cosine
-  NT dot = (u * v);
-  NT cosine = dot / product;
-
-  // sine
-  Vector_3 w = CGAL::cross_product(u, v);
-  NT abs_sine = CGAL::sqrt(w * w) / product;
-
-  if(cosine >= NT(0))
-    return std::asin(fix_sine<K>(abs_sine));
-  else
-    return CGAL_PI - std::asin(fix_sine<K>(abs_sine));
-}
 
 } // namespace internal
 

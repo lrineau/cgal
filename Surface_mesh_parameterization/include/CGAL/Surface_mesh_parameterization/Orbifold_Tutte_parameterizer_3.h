@@ -706,7 +706,7 @@ private:
   {
     //                                                               ->     ->
     // Compute the angle (pj, pi, pk), the angle between the vectors ij and ik
-    const NT angle = internal::compute_angle_rad<Kernel>(pj, pi, pk);
+    const NT angle = approximate_angle(pj, pi, pk);
     const NT weight = std::tan(0.5 * angle);
 
     return weight;

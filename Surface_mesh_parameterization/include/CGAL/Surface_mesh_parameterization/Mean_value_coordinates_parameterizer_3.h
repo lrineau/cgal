@@ -209,14 +209,14 @@ protected:
     vertex_around_target_circulator previous_vertex_v_k = neighbor_vertex_v_j;
     previous_vertex_v_k--;
     const Point_3& position_v_k = get(ppmap, *previous_vertex_v_k);
-    NT gamma_ij = internal::compute_angle_rad<Kernel>(position_v_j, position_v_i, position_v_k);
+    NT gamma_ij = approximate_angle(position_v_j, position_v_i, position_v_k);
 
     // Compute angle of (v_l,v_i,v_j) corner (i.e. angle of v_i corner)
     // if v_l is the vertex after v_j when circulating around v_i
     vertex_around_target_circulator next_vertex_v_l = neighbor_vertex_v_j;
     next_vertex_v_l++;
     const Point_3& position_v_l = get(ppmap, *next_vertex_v_l);
-    NT delta_ij = internal::compute_angle_rad<Kernel>(position_v_l, position_v_i, position_v_j);
+    NT delta_ij = approximate_angle(position_v_l, position_v_i, position_v_j);
 
     NT weight = 0.0;
     CGAL_assertion(len != 0.0); // two points are identical!
