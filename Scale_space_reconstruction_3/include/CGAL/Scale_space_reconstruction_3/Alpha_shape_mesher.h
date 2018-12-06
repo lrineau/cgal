@@ -181,7 +181,7 @@ public:
   Alpha_shape_mesher (FT squared_radius,
                       bool separate_shells = false,
                       bool force_manifold = false,
-                      FT border_angle = 45.)
+                      FT border_angle = CGAL_PI/4.0)
     : _separate_shells (separate_shells),
       _force_manifold (force_manifold),
       _border_angle (border_angle),

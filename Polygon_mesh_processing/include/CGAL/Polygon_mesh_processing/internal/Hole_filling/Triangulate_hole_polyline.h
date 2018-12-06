@@ -254,14 +254,14 @@ private:
       double angle = 0;
       // check whether the edge is border
       if( (v0 + 1 == v1 || (v0 == n-1 && v1 == 0) ) && !Q.empty() ) {
-        angle = 180 - CGAL::abs( 
+        angle = CGAL_PI - CGAL::abs( 
            to_double(CGAL::approximate_dihedral_angle(P[v0],P[v1],P[v_other],Q[v0])) );
       }
       else {
         if(e == 2) { continue; }
         if(lambda.get(v0, v1) != -1){
           const Point_3& p01 = P[lambda.get(v0, v1)];
-          angle = 180 - CGAL::abs( 
+          angle = CGAL_PI - CGAL::abs( 
             to_double(CGAL::approximate_dihedral_angle(P[v0],P[v1],P[v_other],p01)) );
         }
       }
