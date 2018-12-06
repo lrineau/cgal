@@ -335,7 +335,7 @@ private:
     // As far as I check: if, say, dihedral angle is 5, this returns 175,
     // if dihedral angle is -5, this returns -175.
     // Another words this function returns angle between planes.
-    double n_angle = to_double( ::CGAL::approximate_dihedral_angle(a, b, c, d) );
+    double n_angle = to_double( ::CGAL::approximate_dihedral_angle(a, b, c, d) ) * 180/CGAL_PI;
     n_angle /= 180.0;
     bool concave = n_angle > 0;
     double angle = 1 + ((concave ? -1 : +1) * n_angle);
