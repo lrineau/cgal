@@ -28,6 +28,7 @@ bool
 _test_angle(const R&)
 {
   typedef typename R::RT    RT;
+  typedef typename R::RT    FT;
   const RT RT0(0);
   const RT RT1(1);
   typedef CGAL::Point_2<R>  Point_2;
@@ -76,15 +77,19 @@ _test_angle(const R&)
   assert( CGAL::angle( org3, sx, sy, vz) ==  CGAL::ACUTE );
   assert( CGAL::angle( org3, sx, sy, vcoplanar) ==  CGAL::RIGHT );
   assert( CGAL::angle( org3, sx, sy, vmz) ==  CGAL::OBTUSE );
-  assert( CGAL::approximate_angle( sx, org3, sy ) >= RT(89) );
-    assert( CGAL::approximate_angle( sx, org3, sy ) <= RT(91) );
+
+  std::cout << CGAL::approximate_angle( sx, org3, sy ) << std::endl;
+  std::cout << FT(CGAL_PI/2.0 - 0.01) << std::endl;
+  assert( CGAL::to_double(CGAL::approximate_angle( sx, org3, sy )) >= CGAL_PI/2.0 - 0.01);
+  assert( CGAL::to_double(CGAL::approximate_angle( sx, org3, sy )) <= CGAL_PI/2.0 + 0.01);
     
-  assert( CGAL::approximate_angle( sx-org3, sy-org3 ) >= RT(89) );
-    assert( CGAL::approximate_angle( sx-org3, sy-org3 ) <= RT(91) );
+  assert( CGAL::to_double(CGAL::approximate_angle( sx-org3, sy-org3 )) >= CGAL_PI/2.0 - 0.01);
+  assert( CGAL::to_double(CGAL::approximate_angle( sx-org3, sy-org3 )) <= CGAL_PI/2.0 + 0.01);
     
-  assert( CGAL::approximate_angle( sx, org3, sx ) < RT(1) );
-  assert( CGAL::approximate_angle( sx, org3, msx ) >= RT(179) );
-    assert( CGAL::approximate_angle( sx, org3, msx ) <= RT(181) );
+  assert( CGAL::to_double(CGAL::approximate_angle( sx, org3, sx )) < 0.01 );
+  assert( CGAL::to_double(CGAL::approximate_angle( sx, org3, msx )) >= CGAL_PI - 0.01);
+  assert( CGAL::to_double(CGAL::approximate_angle( sx, org3, msx )) <= CGAL_PI + 0.01);
+  
   return true;
 }
 
