@@ -11,9 +11,9 @@ namespace params = PMP::parameters;
 template <class TriangleMesh, class VertexPointMap, class EdgeIsConstrainedMap>
 std::size_t
 mark_sharp_edge(const TriangleMesh& tm,
-                      VertexPointMap vpm,
-                      EdgeIsConstrainedMap ecm,
-                      double angle_threshold = 100)
+                VertexPointMap vpm,
+                EdgeIsConstrainedMap ecm,
+                double angle_threshold = 1.75) // == 100 degree
 {
   typedef boost::graph_traits<TriangleMesh> GT;
   typedef typename GT::edge_descriptor edge_descriptor;
