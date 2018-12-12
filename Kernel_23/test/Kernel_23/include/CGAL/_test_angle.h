@@ -28,7 +28,6 @@ bool
 _test_angle(const R&)
 {
   typedef typename R::RT    RT;
-  typedef typename R::RT    FT;
   const RT RT0(0);
   const RT RT1(1);
   typedef CGAL::Point_2<R>  Point_2;
