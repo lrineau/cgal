@@ -82,7 +82,7 @@ Angle angle(const CGAL::Point_3<Kernel>&p,
 
 /*!
 returns an approximation of the angle between `p-q` and `r-q`.
-The angle is given in degrees.
+The angle is given in radian.
 \pre `p` and `r` are not equal to `q`.
 */
 template <typename Kernel>
@@ -95,7 +95,7 @@ returns an approximation of the signed dihedral angle in the tetrahedron `pqrs` 
 The sign is negative if `orientation(p,q,r,s)` is `CGAL::NEGATIVE` and positive otherwise.
 The angle is given in rad.
 \pre `p,q,r` and `p,q,s` are not collinear.
-\warning Before \cgal 4.14 the angle was given in degree.
+\warning Before \cgal 4.14 the angle was given in radian.
 */
 template <typename Kernel>
 Kernel::FT approximate_dihedral_angle(const CGAL::Point_3<Kernel>& p,
