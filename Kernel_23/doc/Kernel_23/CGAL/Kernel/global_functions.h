@@ -93,9 +93,9 @@ Kernel::FT approximate_angle(const CGAL::Point_3<Kernel>& p,
 /*!
 returns an approximation of the signed dihedral angle in the tetrahedron `pqrs` of edge `pq`.
 The sign is negative if `orientation(p,q,r,s)` is `CGAL::NEGATIVE` and positive otherwise.
-The angle is given in rad.
+The angle is given in radian.
 \pre `p,q,r` and `p,q,s` are not collinear.
-\warning Before \cgal 4.14 the angle was given in radian.
+\warning Before \cgal 4.14 the angle was given in degrees.
 */
 template <typename Kernel>
 Kernel::FT approximate_dihedral_angle(const CGAL::Point_3<Kernel>& p,

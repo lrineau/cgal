@@ -1784,7 +1784,7 @@ public:
 
   /*!
     returns an approximation of the angle between `u` and `v`.
-    The angle is given in rad.
+    The angle is given in radian.
     \pre `u`and `v` are not equal to the null vector.
   */
   Kernel::FT operator()(const Kernel::Vector_3& u,
@@ -1792,7 +1792,7 @@ public:
   
   /*!
     returns an approximation of the angle between `p-q` and `r-q`.
-    The angle is given in rad.
+    The angle is given in radian.
     \pre `p` and `r` are not equal to `q`.
   */
   Kernel::FT operator()(const Kernel::Point_3& p,
