@@ -12,7 +12,8 @@ public:
 /// @{
 
 /*!
-Computes an approximation of the angle of the arc in radians `a`. 
+Computes an approximation of the angle of the arc in radian 
+ and between \f$\left[0,2\pi\right] \f$. 
 */ 
 double 
 operator()(const SphericalKernel::Circular_arc_3 & a); 

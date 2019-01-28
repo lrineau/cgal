@@ -1784,7 +1784,7 @@ public:
 
   /*!
     returns an approximation of the angle between `u` and `v`.
-    The angle is given in radian.
+    The angle is given in radian and between \f$\left[0,\pi\right] \f$.
     \pre `u`and `v` are not equal to the null vector.
   */
   Kernel::FT operator()(const Kernel::Vector_3& u,
@@ -1792,7 +1792,7 @@ public:
   
   /*!
     returns an approximation of the angle between `p-q` and `r-q`.
-    The angle is given in radian.
+    The angle is given in radian and between \f$\left[0,\pi\right] \f$.
     \pre `p` and `r` are not equal to `q`.
   */
   Kernel::FT operator()(const Kernel::Point_3& p,
@@ -1821,7 +1821,7 @@ public:
   /*!
     returns an approximation of the signed dihedral angle in the tetrahedron `pqrs` of edge `pq`.
     The sign is negative if `orientation(p,q,r,s)` is `CGAL::NEGATIVE` and positive otherwise.
-    The angle is given in radian.
+    The angle is given in radian  and between \f$\left[-\pi,\pi\right] \f$.
     \pre `p,q,r` and `p,q,s` are not collinear.
     \warning Before \cgal 4.14 the angle was given in degree.
   */
