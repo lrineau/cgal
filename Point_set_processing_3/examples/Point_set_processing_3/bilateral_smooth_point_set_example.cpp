@@ -43,11 +43,11 @@ int main(int argc, char*argv[])
   }
 
   // Algorithm parameters
-  int k = 120;                 // size of neighborhood. The bigger the smoother the result will be.
-                               // This value should bigger than 1.
-  double sharpness_angle = 25; // control sharpness of the result.
-                               // The bigger the smoother the result will be
-  int iter_number = 3;         // number of times the projection is applied
+  int k = 120;                    // size of neighborhood. The bigger the smoother the result will be.
+                                  // This value should bigger than 1.
+  double sharpness_angle = 0.436; // control sharpness of the result: ~ 25 degree
+                                  // The bigger the smoother the result will be
+  int iter_number = 3;            // number of times the projection is applied
   
   for (int i = 0; i < iter_number; ++i)
   {

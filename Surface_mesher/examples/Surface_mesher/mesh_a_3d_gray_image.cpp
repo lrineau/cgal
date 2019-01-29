@@ -36,7 +36,7 @@ int main() {
   Surface_3 surface(image, bounding_sphere, 1e-5);
 
   // defining meshing criteria
-  CGAL::Surface_mesh_default_criteria_3<Tr> criteria(30.,
+  CGAL::Surface_mesh_default_criteria_3<Tr> criteria(CGAL_PI/6.0, // angle bound 30 degree
                                                      5.,
                                                      5.);
 

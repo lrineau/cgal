@@ -85,7 +85,7 @@ struct Test_with_kernel {
 
     Tr tr;
 
-    const double angle_bound = 30.;
+    const double angle_bound = CGAL_PI/6.0; // 30 degree
     const double radius_bound = 0.1;
     const double distance_bound = 0.1;
     const int initial_number_of_points = 20;

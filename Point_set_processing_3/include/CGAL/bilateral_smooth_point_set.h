@@ -114,7 +114,7 @@ public:
 /// Compute bilateral projection for each point
 /// according to their KNN neighborhood points
 /// 
-/// \pre `k >= 2`, radius > 0 , sharpness_angle > 0 && sharpness_angle < 90
+/// \pre `k >= 2`, radius > 0 , sharpness_angle > 0 && sharpness_angle < pi/2
 ///
 /// @tparam Kernel Geometric traits class.
 /// @tparam Tree KD-tree.
@@ -133,7 +133,7 @@ compute_denoise_projection(
 {
   CGAL_point_set_processing_precondition(radius > 0);
   CGAL_point_set_processing_precondition(sharpness_angle > 0
-                                         && sharpness_angle < 90);
+                                         && sharpness_angle < CGAL_PI/2.0);
 
   // basic geometric types
   typedef typename Kernel::FT FT;
@@ -149,7 +149,7 @@ compute_denoise_projection(
   FT project_weight_sum = FT(0.0);
   Vector normal_sum = CGAL::NULL_VECTOR; 
 
-  FT cos_sigma = cos(sharpness_angle / 180.0 * 3.1415926);
+  FT cos_sigma = cos(sharpness_angle);
   FT sharpness_bandwidth = std::pow((CGAL::max)(1e-8, 1 - cos_sigma), 2);
 
   typename std::vector<Pwn,CGAL_PSP3_DEFAULT_ALLOCATOR<Pwn> >::const_iterator 
@@ -458,8 +458,9 @@ bilateral_smooth_point_set(
   typedef typename CGAL::Point_with_normal_3<Kernel> Pwn;
   typedef typename std::vector<Pwn,CGAL_PSP3_DEFAULT_ALLOCATOR<Pwn> > Pwns;
   typedef typename Kernel::FT FT;
-  
-  double sharpness_angle = choose_param(get_param(np, internal_np::sharpness_angle), 30.);
+
+  FT sa(CGAL_PI/6.0);
+  double sharpness_angle = choose_param(get_param(np, internal_np::sharpness_angle), sa);
   const cpp11::function<bool(double)>& callback = choose_param(get_param(np, internal_np::callback),
                                                                cpp11::function<bool(double)>());
   
@@ -709,7 +710,7 @@ bilateral_smooth_point_set(
   PointMap point_map,        ///< property map OutputIterator -> Point_3.
   NormalMap normal_map,    ///< property map ForwardIterator -> Vector_3.
   const unsigned int k,      ///< number of neighbors.
-  double sharpness_angle     ///< control sharpness(0-90)
+  double sharpness_angle     ///< control sharpness(0-pi/2)
 ) ///< property map OutputIterator -> Vector_3.
 {
   CGAL::Iterator_range<ForwardIterator> points = CGAL::make_range (first, beyond);
@@ -729,7 +730,7 @@ bilateral_smooth_point_set(
   ForwardIterator first,    ///< forward iterator to the first input point.
   ForwardIterator beyond,   ///< past-the-end iterator.
   const unsigned int k,     ///< number of neighbors.
-  double sharpness_angle,   ///< control sharpness(0-90)
+  double sharpness_angle,   ///< control sharpness(0-pi/2)
   NormalMap normal_map)   ///< property map OutputIterator -> Vector_3.
 {
   CGAL::Iterator_range<ForwardIterator> points = CGAL::make_range (first, beyond);

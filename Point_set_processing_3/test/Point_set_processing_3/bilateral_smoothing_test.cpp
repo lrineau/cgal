@@ -89,7 +89,7 @@ int main(int argc, char * argv[])
 
   // Smoothing options
   const unsigned int nb_neighbors = 50; // K-nearest neighbors
-  const double sharpness_sigma = 25; // control sharpness
+  const double sharpness_sigma = 0.436 ; // control sharpness: ~25 degree
 
   // Accumulated errors
   int accumulated_fatal_err = EXIT_SUCCESS;

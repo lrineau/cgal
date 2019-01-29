@@ -344,9 +344,10 @@ edge_aware_upsample_point_set(
   typedef typename Kernel::FT FT;
   typedef typename rich_grid_internal::Rich_point<Kernel> Rich_point;
 
+  FT sa(CGAL_PI/6.0);
   PointMap point_map = choose_param(get_param(np, internal_np::point_map), PointMap());
   NormalMap normal_map = choose_param(get_param(np, internal_np::normal_map), NormalMap());
-  double sharpness_angle = choose_param(get_param(np, internal_np::sharpness_angle), 30.);
+  double sharpness_angle = choose_param(get_param(np, internal_np::sharpness_angle), sa);
   double edge_sensitivity = choose_param(get_param(np, internal_np::edge_sensitivity), 1);
   double neighbor_radius = choose_param(get_param(np, internal_np::neighbor_radius), -1);
   std::size_t number_of_output_points = choose_param(get_param(np, internal_np::number_of_output_points), 1000);
@@ -360,7 +361,7 @@ edge_aware_upsample_point_set(
   // preconditions
   CGAL_point_set_processing_precondition(begin != end);
   CGAL_point_set_processing_precondition(sharpness_angle >= 0 
-                                       &&sharpness_angle <= 90);
+                                       &&sharpness_angle <= CGAL_PI/2.0);
   CGAL_point_set_processing_precondition(edge_sensitivity >= 0 
                                        &&edge_sensitivity <= 1);
   CGAL_point_set_processing_precondition(neighbor_radius > 0);
@@ -406,7 +407,7 @@ edge_aware_upsample_point_set(
                                                       FT(neighbor_radius));
 
   //
-  FT cos_sigma = static_cast<FT>(std::cos(CGAL::to_double(sharpness_angle) / 180.0 * CGAL_PI));
+  FT cos_sigma = static_cast<FT>(std::cos(CGAL::to_double(sharpness_angle) ));
   FT sharpness_bandwidth = std::pow((CGAL::max)((FT)1e-8, (FT)1.0 - cos_sigma), 2);
 
   FT sum_density = 0.0;
@@ -622,13 +623,13 @@ edge_aware_upsample_point_set(
                     ///< controls the preservation of sharp features. 
                     ///< The larger the value is,
                     ///< the smoother the result will be.
-                    ///< The range of possible values is `[0, 90]`.
+                    ///< The range of possible values is `f$\left[0, \pi/2 \right]\f$.
                     ///< See section \ref Point_set_processing_3Upsample_Parameter2
                     ///< for an example.
   typename Kernel::FT edge_sensitivity,  ///<  
                     ///< larger values of edge-sensitivity give higher priority 
                     ///< to inserting points along sharp features.
-                    ///< The range of possible values is `[0, 1]`.
+                    ///< The range of possible values is \f$\left[0, 1\right]\f$.
                     ///< See section \ref Point_set_processing_3Upsample_Parameter1
                     ///< for an example.
   typename Kernel::FT neighbor_radius, ///< 
@@ -667,7 +668,7 @@ edge_aware_upsample_point_set(
   OutputIterator output, ///< output iterator over points.
   PointMap point_map, ///< property map: `ForwardIterator` -> Point_3.
   NormalMap normal_map, ///< property map: `ForwardIterator` -> Vector_3.
-  double sharpness_angle,  ///< control sharpness(0-90)
+  double sharpness_angle,  ///< control sharpness(0-pi/2)
   double edge_sensitivity,  ///< edge sensitivity(0-5)
   double neighbor_radius, ///< initial size of neighbors.
   const std::size_t number_of_output_points///< number of iterations.   
@@ -695,7 +696,7 @@ edge_aware_upsample_point_set(
   ForwardIterator beyond, ///< past-the-end iterator
   OutputIterator output, ///< output iterator over points.
   NormalMap normal_map, ///< property map:  OutputIterator -> Vector_3.
-  double sharpness_angle = 30,  ///< control sharpness(0-90)
+  double sharpness_angle = CGAL_PI/6.0,  ///< control sharpness(0-90)
   double edge_sensitivity = 1,  ///< edge sensitivity(0-5)
   double neighbor_radius = -1, ///< initial size of neighbors.
   const std::size_t number_of_output_points = 1000///< number of output points.     

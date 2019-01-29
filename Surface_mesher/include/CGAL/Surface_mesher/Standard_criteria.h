@@ -132,7 +132,7 @@ namespace CGAL {
         B = 0;
       }
       else {
-        B = std::sin (CGAL_PI * CGAL::to_double(angle_min) / 180);
+        B = std::sin (CGAL::to_double(angle_min));
         B = B * B;
       }
     }

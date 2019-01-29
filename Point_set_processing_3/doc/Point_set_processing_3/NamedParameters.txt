@@ -77,15 +77,15 @@ Note that when a callback is run on a parallelized algorithm with `CGAL::Paralle
 
 \cgalNPBegin{sharpness_angle} \anchor PSP_sharpness_angle
  controls the sharpness of the result. The larger the value is, the smoother the result will be.
-The range of possible value is [0, 90].\n
+The angle is given in radians and the range of possible values is \f$ \left[ 0,\pi/2 \right] \f$.\n
 \b Type: floating scalar value\n
-<b>Default value</b>: `30.`
+<b>Default value</b>: \f$ pi/6 \f$.
 \cgalNPEnd
 
 \cgalNPBegin{edge_sensitivity} \anchor PSP_edge_sensitivity
 controls the priority of points inserted along sharp features. Larger
 values of edge-sensitivity give higher priority to inserting points
-along sharp features. The range of possible values is `[0, 1]`.  \n
+along sharp features. The range of possible values is \f$\left[0, 1\right]\f$  \n
 \b Type: floating scalar value\n
 <b>Default value</b>: `1`.
 \cgalNPEnd

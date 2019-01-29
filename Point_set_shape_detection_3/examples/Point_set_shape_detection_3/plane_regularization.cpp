@@ -53,11 +53,11 @@ int main(int argc, char** argv)
                            planes,
                            CGAL::Shape_detection_3::Plane_map<Traits>(),
                            CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                           true, // Regularize parallelism
-                           true, // Regularize orthogonality
-                           false, // Do not regularize coplanarity
-                           true, // Regularize Z-symmetry (default)
-                           10); // 10 degrees of tolerance for parallelism/orthogonality
+                           true,   // Regularize parallelism
+                           true,   // Regularize orthogonality
+                           false,  // Do not regularize coplanarity
+                           true,   // Regularize Z-symmetry (default)
+                           0.175); // 10 degrees of tolerance for parallelism/orthogonality
   
   return EXIT_SUCCESS;
 }

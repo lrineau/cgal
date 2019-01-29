@@ -77,7 +77,7 @@ namespace CGAL {
     \param normal_map property map: value_type of `InputIterator` -> Vector_3.
     \param output_mesh where the reconstruction is stored.
     \param spacing size parameter.
-    \param sm_angle bound for the minimum facet angle in degrees.
+    \param sm_angle bound for the minimum facet angle in radians with default value of ~20 degree.
     \param sm_radius bound for the radius of the surface Delaunay balls (relatively to the `average_spacing`).
     \param sm_distance bound for the center-center distances (relatively to the `average_spacing`).
     \param tag surface mesher tag.
@@ -96,7 +96,7 @@ namespace CGAL {
                                            NormalMap normal_map,
                                            PolygonMesh& output_mesh,
                                            double spacing,
-                                           double sm_angle = 20.0,
+                                           double sm_angle = CGAL_PI/9.0,
                                            double sm_radius = 30.0,
                                            double sm_distance = 0.375,
                                            Tag tag = Tag())
@@ -112,7 +112,7 @@ namespace CGAL {
                                            NormalMap normal_map,
                                            PolygonMesh& output_mesh,
                                            double spacing,
-                                           double sm_angle = 20.0,
+                                           double sm_angle = CGAL_PI/9.0,
                                            double sm_radius = 30.0,
                                            double sm_distance = 0.375)
   {
@@ -133,7 +133,7 @@ namespace CGAL {
                                            NormalMap normal_map,
                                            PolygonMesh& output_mesh,
                                            double spacing,
-                                           double sm_angle = 20.0,
+                                           double sm_angle = CGAL_PI/9.0,
                                            double sm_radius = 30.0,
                                            double sm_distance = 0.375)
   {

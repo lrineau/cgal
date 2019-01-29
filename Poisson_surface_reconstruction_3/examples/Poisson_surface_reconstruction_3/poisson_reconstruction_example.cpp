@@ -32,7 +32,7 @@ typedef CGAL::Implicit_surface_3<Kernel, Poisson_reconstruction_function> Surfac
 int main(void)
 {
     // Poisson options
-    FT sm_angle = 20.0; // Min triangle angle in degrees.
+    FT sm_angle = CGAL_PI/9.0; // Min triangle angle (20 degrees).
     FT sm_radius = 30; // Max triangle size w.r.t. point set average spacing.
     FT sm_distance = 0.375; // Surface Approximation error w.r.t. point set average spacing.
 
@@ -83,7 +83,7 @@ int main(void)
                       sm_dichotomy_error/sm_sphere_radius);
 
     // Defines surface mesh generation criteria
-    CGAL::Surface_mesh_default_criteria_3<STr> criteria(sm_angle,  // Min triangle angle (degrees)
+    CGAL::Surface_mesh_default_criteria_3<STr> criteria(sm_angle,  // Min triangle angle (radians)
                                                         sm_radius*average_spacing,  // Max triangle size
                                                         sm_distance*average_spacing); // Approximation error
 

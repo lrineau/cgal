@@ -168,7 +168,7 @@ int main()
                              planes,
                              CGAL::Shape_detection_3::Plane_map<Traits>(),
                              CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                             true, false, false, false, 5.);
+                             true, false, false, false, to_rad(5.));
     
     std::vector<Plane> after = get_ransac_planes(ransac);
 
@@ -180,7 +180,7 @@ int main()
                              planes,
                              CGAL::Shape_detection_3::Plane_map<Traits>(),
                              CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                             true, false, false, false, 15.);
+                             true, false, false, false, to_rad(15.));
     
     after = get_ransac_planes(ransac);
 
@@ -214,7 +214,7 @@ int main()
                              planes,
                              CGAL::Shape_detection_3::Plane_map<Traits>(),
                              CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                             false, true, false, true, 5.);
+                             false, true, false, true, to_rad(5.));
 
     std::vector<Plane> after = get_ransac_planes(ransac);
 
@@ -226,7 +226,7 @@ int main()
                              planes,
                              CGAL::Shape_detection_3::Plane_map<Traits>(),
                              CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                             false, true, false, true, 15.);
+                             false, true, false, true, to_rad(15.));
 
     after = get_ransac_planes(ransac);
 
@@ -259,7 +259,7 @@ int main()
                              planes,
                              CGAL::Shape_detection_3::Plane_map<Traits>(),
                              CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                             true, false, true, false, 5., 0.1);
+                             true, false, true, false, to_rad(5.), 0.1);
 
     std::vector<Plane> after = get_ransac_planes(ransac);
 
@@ -271,7 +271,7 @@ int main()
                              planes,
                              CGAL::Shape_detection_3::Plane_map<Traits>(),
                              CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                             true, false, true, false, 5., 0.3);
+                             true, false, true, false, to_rad(5.), 0.3);
 
     after = get_ransac_planes(ransac);
 
@@ -308,7 +308,7 @@ int main()
                              planes,
                              CGAL::Shape_detection_3::Plane_map<Traits>(),
                              CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                             false, false, false, true, 5., 0.01, Vector(1., 0., 0.));
+                             false, false, false, true, to_rad(5.), 0.01, Vector(1., 0., 0.));
 
     std::vector<Plane> after = get_ransac_planes(ransac);
 
@@ -320,7 +320,7 @@ int main()
                              planes,
                              CGAL::Shape_detection_3::Plane_map<Traits>(),
                              CGAL::Shape_detection_3::Point_to_shape_index_map<Traits>(points, planes),
-                             false, false, false, true, 15., 0.01, Vector(1., 0., 0.));
+                             false, false, false, true, to_rad(15.), 0.01, Vector(1., 0., 0.));
 
     after = get_ransac_planes(ransac);
 

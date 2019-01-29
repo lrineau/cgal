@@ -33,7 +33,7 @@ int main() {
   // Note that "2." above is the *squared* radius of the bounding sphere!
 
   // defining meshing criteria
-  CGAL::Surface_mesh_default_criteria_3<Tr> criteria(30.,  // angular bound
+  CGAL::Surface_mesh_default_criteria_3<Tr> criteria(CGAL_PI/6.0,  // angular bound 30 degree
                                                      0.1,  // radius bound
                                                      0.1); // distance bound
   // meshing surface

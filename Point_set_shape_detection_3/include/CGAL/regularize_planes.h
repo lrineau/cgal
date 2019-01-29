@@ -591,15 +591,17 @@ void subgraph_mutually_orthogonal_clusters (std::vector<Plane_cluster<Traits> >&
     regularized or not.
 
     \param tolerance_angle Tolerance of deviation between normal
-    vectors of planes (in degrees) used for parallelism, orthogonality
-    and axis symmetry. Default value is 25 degrees.
+    vectors of planes (in radian) used for parallelism, orthogonality
+    and axis symmetry. %Default value is 0.436 ( ~ 25 degrees).
 
     \param tolerance_coplanarity Maximal distance between two parallel
-    planes such that they are considered coplanar. Default value is
+    planes such that they are considered coplanar. %Default value is
     0.01.
 
     \param symmetry_direction Chosen axis for symmetry
-    regularization. Default value is the Z axis.
+    regularization. %Default value is the Z axis.
+ 
+    \warning Starting with CGAL 4.14 we use radian instead of degree for measuring angles. This concerns the parameter `tolerance_angle`.
 */ 
 
 // This variant requires all parameters
@@ -619,7 +621,7 @@ void regularize_planes (const PointRange& points,
                         bool regularize_orthogonality,
                         bool regularize_coplanarity,
                         bool regularize_axis_symmetry,
-                        double tolerance_angle = 25.0,
+                        double tolerance_angle = 0.436,
                         double tolerance_coplanarity = 0.01,
                         typename Kernel::Vector_3 symmetry_direction
                         = typename Kernel::Vector_3 (0., 0., 1.))
@@ -640,7 +642,6 @@ void regularize_planes (const PointRange& points,
   internal::PlaneRegularization::compute_centroids_and_areas<Kernel>
     (points, point_map, planes.size(), index_map, centroids, areas);
 
-  tolerance_angle = tolerance_angle * (FT)CGAL_PI / (FT)(180);
   FT tolerance_cosangle = (FT)(1. - std::cos (tolerance_angle));
   FT tolerance_cosangle_ortho = (FT)(std::cos ((FT)0.5 * (FT)CGAL_PI - (FT)tolerance_angle));
       

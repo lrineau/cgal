@@ -123,7 +123,7 @@ int main(int argc, char * argv[])
     }
 
     // Poisson options
-    FT sm_angle = 20.0; // Min triangle angle (degrees).
+    FT sm_angle = CGAL_PI/9.0; // Min triangle angle (20 degrees).
     FT sm_radius = 100; // Max triangle size w.r.t. point set average spacing.
     FT sm_distance = 0.25; // Approximation error w.r.t. point set average spacing.
     std::string solver_name = "eigen"; // Sparse linear solver name.
@@ -325,7 +325,7 @@ int main(int argc, char * argv[])
 
     CGAL_TRACE_STREAM << "  make_surface_mesh(sphere center=("<<inner_point << "),\n"
                       << "                    sphere radius="<<sm_sphere_radius<<",\n"
-                      << "                    angle="<<sm_angle << " degrees,\n"
+                      << "                    angle="<<sm_angle << " radians,\n"
                       << "                    triangle size="<<sm_radius<<" * average spacing="<<sm_radius*average_spacing<<",\n"
                       << "                    distance="<<sm_distance<<" * average spacing="<<sm_distance*average_spacing<<",\n"
                       << "                    dichotomy error=distance/"<<sm_distance*average_spacing/sm_dichotomy_error<<",\n"
