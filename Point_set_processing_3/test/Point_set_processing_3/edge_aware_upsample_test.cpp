@@ -101,9 +101,9 @@ int main(int argc, char * argv[])
   }
 
   //Algorithm parameters
-  const double sharpness_sigma = 25;   //control sharpness of the result.
+  const double sharpness_sigma = 0.436; // control sharpness: ~25 degree
   const double edge_sensitivity = 0;    // more points will up-sample on edge.
-  const double neighbor_radius = 0.2;      // initial neighbors size.
+  const double neighbor_radius = 0.2;   // initial neighbors size.
   const unsigned int times_of_output_points = 4;
 
   // Accumulated errors
