@@ -84,7 +84,7 @@ int main(int argc, char * argv[])
   }
 
   // Poisson options
-  FT sm_angle = 20.0; // Min triangle angle (degrees).
+  FT sm_angle = CGAL_PI/9.0; // Min triangle angle (20 degrees).
   FT sm_radius = 100; // Max triangle size w.r.t. point set average spacing.
   FT sm_distance = 0.5; // Approximation error w.r.t. point set average spacing.
 
