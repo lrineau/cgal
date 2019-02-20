@@ -115,6 +115,7 @@ if ( CGAL_FOUND )
 
     foreach(target
         mesh_3D_image_with_features
+        remesh_polyhedral_surface
         mesh_3D_image
         mesh_polyhedral_domain
         mesh_3D_image_with_custom_initialization
