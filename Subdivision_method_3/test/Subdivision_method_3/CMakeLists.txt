@@ -8,8 +8,14 @@ cmake_minimum_required(VERSION 2.8.10)
 
 find_package(CGAL QUIET)
 
-if ( CGAL_FOUND )
+find_package(dtk REQUIRED)
+find_package(dtkContinuousGeometry REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Core)
+include_directories ( ${dtk_INCLUDE_DIRS} )
+include_directories ( ${dtkContinuousGeometry_INCLUDE_DIRS} )
 
+if ( CGAL_FOUND )
+  set(CGAL_3RD_PARTY_LIBRARIES ${CGAL_3RD_PARTY_LIBRARIES} Qt5::Core dtkCore dtkContinuousGeometryCore)
   include( ${CGAL_USE_FILE} )
 
   include( CGAL_CreateSingleSourceCGALProgram )
