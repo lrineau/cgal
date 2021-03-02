@@ -54,13 +54,10 @@ public:
   QString nameFilters() const { return "None"; }
   bool canLoad(QFileInfo) const { return true; }
   QList<CGAL::Three::Scene_item*> load(QFileInfo fileinfo, bool& ok, bool add_to_scene=true){
-      dtkContinuousGeometrySettings settings;
-      settings.beginGroup("continuous-geometry");
       dtkLogger::instance().attachConsole();
       dtkLogger::instance().setLevel(dtk::LogLevel::Error);
       dtkContinuousGeometry::setVerboseLoading(true);
-      dtkContinuousGeometry::initialize(settings.value("plugins").toString());
-      settings.endGroup();
+      dtkContinuousGeometry::initialize("");
       dtkAbstractRationalBezierSurfaceData *bezier_surface_data = dtkContinuousGeometry::abstractRationalBezierSurfaceData::pluginFactory().create("dtkRationalBezierSurfaceDataOn");
       if(bezier_surface_data == nullptr) {
           ok = false;

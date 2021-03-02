@@ -54,13 +54,10 @@ public:
   QString nameFilters() const { return "None"; }
   bool canLoad(QFileInfo) const { return true; }
    QList<Scene_item*> load(QFileInfo fileinfo, bool& ok, bool add_to_scene=true) {
-      dtkContinuousGeometrySettings settings;
-      settings.beginGroup("continuous-geometry");
       dtkLogger::instance().attachConsole();
       dtkLogger::instance().setLevel(dtk::LogLevel::Error);
       dtkContinuousGeometry::setVerboseLoading(true);
-      dtkContinuousGeometry::initialize(settings.value("plugins").toString());
-      settings.endGroup();
+      dtkContinuousGeometry::initialize("");
       dtkAbstractRationalBezierCurveData *bezier_curve_data = dtkContinuousGeometry::abstractRationalBezierCurveData::pluginFactory().create("dtkRationalBezierCurveDataOn");
       if(bezier_curve_data == nullptr) {
           dtkFatal() << "The openNURBS plugin of dtkAbstractRationalBezierCurveData could not be loaded.";

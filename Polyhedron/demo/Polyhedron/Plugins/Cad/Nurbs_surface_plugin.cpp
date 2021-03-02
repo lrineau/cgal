@@ -54,13 +54,10 @@ public:
   QString nameFilters() const { return "None"; }
   bool canLoad(QFileInfo) const { return true; }
   QList<CGAL::Three::Scene_item*> load(QFileInfo fileinfo, bool& ok, bool add_to_scene=true){
-      dtkContinuousGeometrySettings settings;
-      settings.beginGroup("continuous-geometry");
       dtkLogger::instance().attachConsole();
       dtkLogger::instance().setLevel(dtk::LogLevel::Error);
       dtkContinuousGeometry::setVerboseLoading(true);
-      dtkContinuousGeometry::initialize(settings.value("plugins").toString());
-      settings.endGroup();
+      dtkContinuousGeometry::initialize("");
       dtkAbstractNurbsSurfaceData *nurbs_surface_data = dtkContinuousGeometry::abstractNurbsSurfaceData::pluginFactory().create("dtkNurbsSurfaceDataOn");
       if(nurbs_surface_data == nullptr) {
           dtkFatal() << "The openNURBS plugin of dtkNurbsSurfaceData could not be loaded.";

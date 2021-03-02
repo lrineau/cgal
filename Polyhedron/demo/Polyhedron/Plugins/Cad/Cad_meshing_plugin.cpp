@@ -66,28 +66,7 @@ public:
 
       dtkLogger::instance().setLevel(dtk::LogLevel::Info);
 
-      dtkContinuousGeometrySettings settings;
-      settings.beginGroup("continuous-geometry");
-
-      dtkContinuousGeometry::setVerboseLoading(true);
-      QString plugins_path = settings.value("plugins").toString();
-      QApplication::restoreOverrideCursor();
-
-      if(plugins_path.isEmpty())
-      {
-#ifdef DTK_PLUGINS_DIR
-        plugins_path = QFileDialog::getExistingDirectory(mw, "Path to dtkContinuousPlugins", DTK_PLUGINS_DIR);
-#else
-        plugins_path = QFileDialog::getExistingDirectory(mw, "Path to dtkContinuousPlugins");
-#endif
-        if(plugins_path.isEmpty())
-        {
-          return QList<CGAL::Three::Scene_item*>();
-        }
-      }
-      QApplication::setOverrideCursor(Qt::WaitCursor);
-      dtkContinuousGeometry::initialize(plugins_path);
-      settings.endGroup();
+      dtkContinuousGeometry::initialize("");
       dtkBRepReader *brep_reader =
           dtkContinuousGeometry::bRepReader::pluginFactory().create(
               occt_file ? "OpenCASCADEBRepReader" : "openNURBSBRepReader");
