@@ -225,8 +225,8 @@ struct Scene_nurbs_item_priv{
       for (auto trim = (*trim_loop)->trims().begin(); trim != (*trim_loop)->trims().end(); ++trim)
       {
         std::size_t length = (*trim)->curve2D().nbCps() + (*trim)->curve2D().degree() - 1;
-        double knots[length];
-        (*trim)->curve2D().knots(knots);
+		std::vector<double> knots(length);
+        (*trim)->curve2D().knots(knots.data());
         dtkContinuousGeometryPrimitives::Point_2 p(0,0);
         dtkContinuousGeometryPrimitives::Point_3 p3D(0,0,0);
         (*trim)->curve2D().evaluatePoint(knots[0], p.data());

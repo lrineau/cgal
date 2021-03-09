@@ -53,8 +53,9 @@ struct Scene_cad_item_priv{
         dtkNurbsCurve* nurb = topo_trim->m_nurbs_curve_3d;
         if (nurb != nullptr) {
             std::size_t length = nurb->nbCps() + nurb->degree() - 1;
-            double knots[length];
-            nurb->knots(knots);
+            std::vector<double> knots(length);
+			
+            nurb->knots(knots.data());
             dtkContinuousGeometryPrimitives::Point_3 p(0,0,0);
             nurb->evaluatePoint(knots[0], p.data());
             for(int j=0; j<3; ++j)
