@@ -54,7 +54,6 @@ struct Scene_cad_item_priv{
         if (nurb != nullptr) {
             std::size_t length = nurb->nbCps() + nurb->degree() - 1;
             std::vector<double> knots(length);
-			
             nurb->knots(knots.data());
             dtkContinuousGeometryPrimitives::Point_3 p(0,0,0);
             nurb->evaluatePoint(knots[0], p.data());
