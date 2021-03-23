@@ -31,34 +31,6 @@ else()
     dtkContinuousGeometryCore
     ${TBB_LIBRARIES})
 
-  qt5_wrap_ui(CAD_initialization_plugin_UI_FILES CAD_mesher_protect_initialization_dialog.ui)
-  polyhedron_demo_plugin(cad_initialization_plugin
-    CAD_initialization_plugin
-    ${CAD_initialization_plugin_UI_FILES} KEYWORDS NURBS)
-  target_link_libraries(cad_initialization_plugin PUBLIC
-    polyhedron_demo
-    scene_cad_item
-    scene_c3t3_item
-    scene_c3t3_cad_item
-    dtkCore
-    dtkLog
-    dtkContinuousGeometryCore
-    dtkNurbsProbingCore)
-
-  qt5_wrap_ui(CAD_refine_plugin_UI_FILES CAD_refine_dialog.ui)
-  polyhedron_demo_plugin(cad_refine_plugin
-    CAD_refine_plugin
-    ${CAD_refine_plugin_UI_FILES} KEYWORDS NURBS)
-  target_link_libraries(cad_refine_plugin PUBLIC
-    polyhedron_demo
-    scene_cad_item
-    scene_c3t3_item
-    scene_c3t3_cad_item
-    dtkCore
-    dtkLog
-    dtkContinuousGeometryCore
-    dtkNurbsProbingCore)
-
   polyhedron_demo_plugin(cad_meshing_plugin
     Cad_meshing_plugin KEYWORDS NURBS)
   target_link_libraries(cad_meshing_plugin PUBLIC
@@ -94,20 +66,6 @@ else()
     dtkCore
     dtkLog
     dtkContinuousGeometryCore)
-
-  qt5_wrap_ui( cad_mesherUI_FILES Cad_mesher_dialog.ui)
-  polyhedron_demo_plugin(cad_mesher_plugin
-    Cad_mesher_plugin
-    ${cad_mesherUI_FILES} KEYWORDS NURBS)
-  target_link_libraries(cad_mesher_plugin PUBLIC
-    polyhedron_demo
-    scene_c3t3_item
-    scene_cad_item
-    scene_c3t3_cad_item
-    dtkCore
-    dtkLog
-    dtkContinuousGeometryCore
-    dtkNurbsProbingCore)
 
   polyhedron_demo_plugin(cad_c3t3_io_plugin Cad_c3t3_io_plugin KEYWORDS NURBS)
   target_link_libraries(cad_c3t3_io_plugin PUBLIC scene_c3t3_cad_item)
