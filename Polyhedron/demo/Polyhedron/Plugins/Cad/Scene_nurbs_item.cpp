@@ -616,7 +616,7 @@ void Scene_nurbs_item::initializeBuffers(Viewer_interface * viewer) const
 void Scene_nurbs_item::computeElements() const
 {
   getTriangleContainer(1)->allocate(Tc::Vertex_indices, d->m_untrimmed_elements.data(),
-                                    static_cast<int>(d->m_untrimmed_elements.size() *3*
+                                    static_cast<int>(d->m_untrimmed_elements.size() *
                                                      sizeof(unsigned int)));
   getTriangleContainer(1)->allocate(Tc::Smooth_vertices, d->untrimmed_vertices.data(),
                                     static_cast<int>(d->m_nb_untrimmed_vertices * 6 *
