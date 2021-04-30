@@ -41,7 +41,7 @@ else()
     dtkContinuousGeometryCore)
 
   polyhedron_demo_plugin(rational_bezier_surface_plugin
-    Rational_bezier_surface_plugin KEYWORDS NURBS)
+    Rational_bezier_surface_plugin) #KEYWORDS NURBS)
   target_link_libraries(rational_bezier_surface_plugin PUBLIC
     polyhedron_demo
     scene_rational_bezier_surface_item
@@ -59,7 +59,7 @@ else()
     dtkContinuousGeometryCore)
 
   polyhedron_demo_plugin(nurbs_surface_plugin
-    Nurbs_surface_plugin KEYWORDS NURBS)
+    Nurbs_surface_plugin)# KEYWORDS NURBS)
   target_link_libraries(nurbs_surface_plugin PUBLIC
     polyhedron_demo
     scene_nurbs_item
@@ -67,6 +67,6 @@ else()
     dtkLog
     dtkContinuousGeometryCore)
 
-  polyhedron_demo_plugin(cad_c3t3_io_plugin Cad_c3t3_io_plugin KEYWORDS NURBS)
+  polyhedron_demo_plugin(cad_c3t3_io_plugin Cad_c3t3_io_plugin) # KEYWORDS NURBS)
   target_link_libraries(cad_c3t3_io_plugin PUBLIC scene_c3t3_cad_item)
 endif()
