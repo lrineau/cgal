@@ -26,6 +26,7 @@ CGAL_URL="https://cgal.geometryfactory.com/CGAL/Releases"
 CURL_OPTS="--remote-name --silent --location --netrc"
 LATEST_LOCATION="${CGAL_URL}/LATEST"
 CGAL_DOC_BUILD="/home/cgal-testsuite/cgal_doc_build"
+DOC_PUB_DIR=/srv/CGAL/www/Members/Manual_doxygen_test
 
 if [ -r "${CGAL_DOC_BUILD}" ]; then
     rm -rf "${CGAL_DOC_BUILD}"
@@ -57,10 +58,13 @@ if [ ! -d "${CGAL_DOC_BUILD}/${CGAL_RELEASE_ID}" ]; then
     error "directory ${CGAL_DOC_BUILD}/${CGAL_RELEASE_ID} does not exist"
 fi
 cd "${CGAL_RELEASE_ID}"
-$HOME/Git/cgal-documentation-dockerfile/generate_documentation.sh $HOME/Git/cgal-documentation-dockerfile ${CGAL_DOC_BUILD}/${CGAL_RELEASE_ID} /srv/CGAL/www/Members/Manual_doxygen_test
+mkdir Manual_doxygen_test
+rsync -a "${DOC_PUB_DIR}/index.html" Manual_doxygen_test/
+$HOME/Git/cgal-documentation-dockerfile/generate_documentation.sh $HOME/Git/cgal-documentation-dockerfile ${CGAL_DOC_BUILD}/${CGAL_RELEASE_ID} "$PWD/Manual_doxygen_test"
+rsync -a "$PWD/Manual_doxygen_test/index.html" "$PWD/Manual_doxygen_test/${CGAL_RELEASE_ID}" "${CGAL_DOC_BUILD}/"
 
 if head -2 .scm-branch | grep -q cgal/master; then
-    rsync -a --delete "/srv/CGAL/www/Members/Manual_doxygen_test/${CGAL_RELEASE_ID}/output2/" /srv/CGAL/www/doc/master/
+    rsync -a --delete "${DOC_PUB_DIR}/${CGAL_RELEASE_ID}/output2/" /srv/CGAL/www/doc/master/
 fi
 rm -rf "${CGAL_DOC_BUILD}"
 # Then gzip the log file, to save space
