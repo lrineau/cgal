@@ -49,7 +49,10 @@ private:
   };
 
   struct Node_disposer {
-    void operator()(Node* p) const { delete p; }
+    void operator()(Node *p) const {
+      std::cerr << "delete(" << p << ")\n";
+      delete p;
+    }
   };
 
   typedef boost::intrusive::member_hook<
@@ -218,17 +221,24 @@ public:
     return !(it.base()->skip_hook.is_linked());
   }
 
+  auto new_node(const value_type& t)
+  {
+    auto p = new Node(t);
+    std::cerr << "Skiplist::new_node(" << p << ")\n";
+    return p;
+  }
+
   /// Adds an element to the end of both views in Skiplist.
   void push_back(const value_type& t)
   {
-    all_.push_back(*new Node(t));
+    all_.push_back(*new_node(t));
     skip_.push_back(all_.back());
   }
 
   /// Adds an element to the front of both views in Skiplist.
   void push_front(const value_type& t)
   {
-    all_.push_front(*new Node(t));
+    all_.push_front(*new_node(t));
     skip_.push_front(all_.front());
   }
 
@@ -242,7 +252,7 @@ public:
   /// @returns an skip_iterator to the inserted element.
   all_iterator insert(all_iterator pos, const value_type& t)
   {
-    return all_.insert(pos.base(), *new Node(t));
+    return all_.insert(pos.base(), *new_node(t));
   }
 
   /// Insert \c t before \c pos in the all_view. \t will be inserted into the skip view.
@@ -311,6 +321,8 @@ public:
   /// @postcond *this.empty() == true
   void clear()
   {
+    std::cerr << "Skiplist::clear()\n";
+
     skip_.clear();
     all_.clear_and_dispose(Node_disposer());
   }
