@@ -1,0 +1,8 @@
+{
+        "name": "CGAL test-ubuntu",
+        "image": "test-ubuntu",
+        "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+        },
+        "extensions": []
+}
