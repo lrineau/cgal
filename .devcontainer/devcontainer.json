@@ -4,5 +4,11 @@
         "settings": {
                 "terminal.integrated.shell.linux": "/bin/bash"
         },
+        "remoteUser": "root",
+        "containerUser": "vscode",
+        "workspaceMount": "",
+        "runArgs": [
+                "--volume=${localWorkspaceFolder}:/workspaces/${localWorkspaceFolderBasename}:Z"
+        ],
         "extensions": []
 }
