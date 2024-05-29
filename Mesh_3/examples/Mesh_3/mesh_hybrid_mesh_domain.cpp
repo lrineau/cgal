@@ -201,7 +201,8 @@ int main() {
   Polyhedron_domain polyhedron_domain(polyhedron);
   Implicit_domain sphere_domain =
     Implicit_domain::create_implicit_mesh_domain(my_implicit_surface,
-                                                 Kernel::Sphere_3(Point_3(0, 0, 0), FT(9)));
+                                                 Kernel::Sphere_3(Point_3(0, 0, 0), FT(9)),
+						 CGAL::parameters::relative_error_bound(1e-6));
   H_domain domain(sphere_domain, polyhedron_domain);
   
   // Polyline features
@@ -217,7 +218,7 @@ int main() {
 
   // Criteria
   H_Edge_criteria edge_criteria(0.05);
-  H_Facet_criteria facet_criteria(30, 0.05, 0.025); // angle, size, approximation
+  H_Facet_criteria facet_criteria(30, 0.05, 0.001); // angle, size, approximation
   H_Cell_criteria cell_criteria(2, 0.05); // radius-edge ratio, size
   H_Mesh_criteria criteria(edge_criteria, facet_criteria, cell_criteria);
   
