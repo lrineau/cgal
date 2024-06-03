@@ -100,7 +100,7 @@ class Hybrid_domain {
 				r_domain_.polyhedron_domain.is_in_domain_object()(p);
 
 			if(!implicit_subdomain_index && polyhedron_subdomain_index)
-				return 2;
+				return boost::none;
 			else
 				return polyhedron_subdomain_index;
 
